@@ -62,8 +62,11 @@ class WorkflowPointCreateValidator extends Validator
 		$this->rules = [
 			'workflow_id'			=> 'required|exists:workflows,id',
 			'status'				=> ['required', 'min:3', 'max:50', 'regex:/^[0-9a-zA-Z-_]*$/'],
-			'action'				=> ['required', 'min:3', 'max:50', 'regex:/^[0-9a-zA-Z-_]*$/'],
+			'endpoint'				=> ['required', 'min:3', 'max:50', 'regex:/^[0-9a-zA-Z-_]*$/'],
+			'action'				=> 'required|min:3|max:250',
 			'name'					=> 'required|min:3|max:250',
+			'public'				=> 'sometimes|boolean',
+			'deleted'				=> 'sometimes|boolean',
 			'description'			=> 'sometimes',
 			'sort_order'			=> 'sometimes|integer',
 			'steps'					=> 'sometimes|array'
@@ -110,10 +113,10 @@ class WorkflowPointCreateValidator extends Validator
 				$this->exception->addErrors(['status' => 'This field needs to be unique.']);
 			}
 
-			$workflowPoints = $this->workflowPointRepository->get(['action' => $command->params['action'], 'workflow_id' => $command->params['workflow_id']]);
+			$workflowPoints = $this->workflowPointRepository->get(['endpoint' => $command->params['endpoint'], 'workflow_id' => $command->params['workflow_id']]);
 			if( count($workflowPoints) > 0 )
 			{
-				$this->exception->addErrors(['action' => 'This field needs to be unique.']);
+				$this->exception->addErrors(['endpoint' => 'This field needs to be unique.']);
 			}
 		}
 

@@ -63,9 +63,12 @@ class WorkflowPointGetValidator extends Validator
 		$this->availableSorting = [
 			'id',
 			'status',
+			'endpoint',
 			'action',
 			'name',
 			'description',
+			'public',
+			'deleted',
 			'sort_order',
 			'created_at'
 		];

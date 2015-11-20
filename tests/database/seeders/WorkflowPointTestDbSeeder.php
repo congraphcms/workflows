@@ -34,9 +34,12 @@ class WorkflowPointTestDbSeeder extends Seeder {
 			[
 				'workflow_id' => 1,
 				'status' => 'trashed',
-				'action' => 'trash',
-				'name' => 'Trash',
+				'endpoint' => 'trash',
+				'action' => 'Trash',
+				'name' => 'Trashed',
 				'description' => 'Trashed objects',
+				'public' => 0,
+				'deleted' => 1,
 				'sort_order' => 0,
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
@@ -44,9 +47,12 @@ class WorkflowPointTestDbSeeder extends Seeder {
 			[
 				'workflow_id' => 1,
 				'status' => 'draft',
-				'action' => 'move_to_drafts',
-				'name' => 'Drafts',
+				'endpoint' => 'move_to_drafts',
+				'action' => 'Move to drafts',
+				'name' => 'Draft',
 				'description' => 'Draft objects',
+				'public' => 0,
+				'deleted' => 0,
 				'sort_order' => 1,
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
@@ -54,9 +60,12 @@ class WorkflowPointTestDbSeeder extends Seeder {
 			[
 				'workflow_id' => 1,
 				'status' => 'published',
-				'action' => 'publish',
+				'endpoint' => 'publish',
+				'action' => 'Publish',
 				'name' => 'Published',
 				'description' => 'Published objects',
+				'public' => 1,
+				'deleted' => 0,
 				'sort_order' => 2,
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")

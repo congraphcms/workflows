@@ -45,8 +45,11 @@ class CreateWorkflowTables extends Migration {
 			$table->increments('id');
 			$table->integer('workflow_id')->usigned();
 			$table->string('status', 50);
-			$table->string('action', 50);
+			$table->string('endpoint', 50);
+			$table->string('action', 250);
 			$table->string('name', 250);
+			$table->boolean('public')->default(0);
+			$table->boolean('deleted')->default(0);
 			$table->string('description')->default('');
 			$table->integer('sort_order')->default(0);
 			$table->timestamps();

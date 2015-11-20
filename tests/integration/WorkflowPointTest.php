@@ -76,9 +76,12 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$params = [
 			'workflow_id' => 1,
 			'status' => 'archived',
-			'action' => 'archive',
+			'endpoint' => 'archive',
+			'action' => 'Archive',
 			'name' => 'Archived',
 			'description' => 'Archived objects',
+			'public' => true,
+			'deleted' => false,
 			'sort_order' => 4
 		];
 
@@ -90,17 +93,23 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('archived', $result->status);
-		$this->assertEquals('archive', $result->action);
+		$this->assertEquals('archive', $result->endpoint);
+		$this->assertEquals('Archive', $result->action);
 		$this->assertEquals('Archived', $result->name);
 		$this->assertEquals('Archived objects', $result->description);
+		$this->assertEquals(1, $result->public);
+		$this->assertEquals(0, $result->deleted);
 		$this->assertEquals(4, $result->sort_order);
 		
 		$this->seeInDatabase('workflow_points', [
 			'id' => 4, 
 			'status' => 'archived',
-			'action' => 'archive',
+			'endpoint' => 'archive',
+			'action' => 'Archive',
 			'name' => 'Archived',
 			'description' => 'Archived objects',
+			'public' => 1,
+			'deleted' => 0,
 			'sort_order' => 4
 		]);
 	}
@@ -112,9 +121,12 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$params = [
 			'workflow_id' => 1,
 			'status' => 'archived',
-			'action' => 'archive',
+			'endpoint' => 'archive',
+			'action' => 'Archive',
 			'name' => 'Archived',
 			'description' => 'Archived objects',
+			'public' => true,
+			'deleted' => false,
 			'sort_order' => 4,
 			'steps' => [
 				[
@@ -140,18 +152,24 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('archived', $result->status);
-		$this->assertEquals('archive', $result->action);
+		$this->assertEquals('archive', $result->endpoint);
+		$this->assertEquals('Archive', $result->action);
 		$this->assertEquals('Archived', $result->name);
 		$this->assertEquals('Archived objects', $result->description);
+		$this->assertEquals(1, $result->public);
+		$this->assertEquals(0, $result->deleted);
 		$this->assertEquals(4, $result->sort_order);
 		$this->assertEquals(3, count($result->steps));
 		
 		$this->seeInDatabase('workflow_points', [
 			'id' => 4, 
 			'status' => 'archived',
-			'action' => 'archive',
+			'endpoint' => 'archive',
+			'action' => 'Archive',
 			'name' => 'Archived',
 			'description' => 'Archived objects',
+			'public' => 1,
+			'deleted' => 0,
 			'sort_order' => 4
 		]);
 
