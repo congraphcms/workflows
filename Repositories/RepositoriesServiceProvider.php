@@ -67,7 +67,17 @@ class RepositoriesServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->alias(
-			'Cookbook\Workflows\Repositories\WorkflowRepository', 'Cookbook\Contracts\Locales\WorkflowRepositoryContract'
+			'Cookbook\Workflows\Repositories\WorkflowRepository', 'Cookbook\Contracts\Workflows\WorkflowRepositoryContract'
+		);
+
+		$this->app->singleton('Cookbook\Workflows\Repositories\WorkflowPointRepository', function($app) {
+			return new WorkflowPointRepository(
+				$app['db']->connection()
+			);
+		});
+
+		$this->app->alias(
+			'Cookbook\Workflows\Repositories\WorkflowPointRepository', 'Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'
 		);
 
 		$this->app->singleton('Cookbook\Workflows\Repositories\WorkflowStepRepository', function($app) {
@@ -77,7 +87,7 @@ class RepositoriesServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->alias(
-			'Cookbook\Workflows\Repositories\WorkflowStepRepository', 'Cookbook\Contracts\Locales\WorkflowStepRepositoryContract'
+			'Cookbook\Workflows\Repositories\WorkflowStepRepository', 'Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'
 		);
 
 	}

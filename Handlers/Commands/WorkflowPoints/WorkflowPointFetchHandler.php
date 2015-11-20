@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Handlers\Commands\WorkflowSteps;
+namespace Cookbook\Workflows\Handlers\Commands\WorkflowPoints;
 
 
-use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
+use Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract;
 use Cookbook\Core\Bus\RepositoryCommandHandler;
 use Cookbook\Core\Bus\RepositoryCommand;
 
 /**
- * WorkflowStepCreateHandler class
+ * WorkflowPointFetchHandler class
  * 
- * Handling command for creating workflow step
+ * Handling command for fetching workflow point
  * 
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -27,17 +27,17 @@ use Cookbook\Core\Bus\RepositoryCommand;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowStepCreateHandler extends RepositoryCommandHandler
+class WorkflowPointFetchHandler extends RepositoryCommandHandler
 {
 
 	/**
-	 * Create new WorkflowStepCreateHandler
+	 * Create new WorkflowPointFetchHandler
 	 * 
-	 * @param Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract $repository
+	 * @param Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract $repository
 	 * 
 	 * @return void
 	 */
-	public function __construct(WorkflowStepRepositoryContract $repository)
+	public function __construct(WorkflowPointRepositoryContract $repository)
 	{
 		parent::__construct($repository);
 	}
@@ -51,8 +51,11 @@ class WorkflowStepCreateHandler extends RepositoryCommandHandler
 	 */
 	public function handle(RepositoryCommand $command)
 	{
-		$workflowStep = $this->repository->create($command->params);
+		$workflowPoint = $this->repository->fetch(
+			$command->id,
+			(!empty($command->params['include']))?$command->params['include']:[]
+		);
 
-		return $workflowStep;
+		return $workflowPoint;
 	}
 }

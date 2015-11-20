@@ -10,6 +10,7 @@
 
 namespace Cookbook\Workflows\Validators\Workflows;
 
+use Cookbook\Contracts\Workflows\WorkflowRepositoryContract;
 use Cookbook\Core\Bus\RepositoryCommand;
 use Cookbook\Core\Validation\Validator;
 

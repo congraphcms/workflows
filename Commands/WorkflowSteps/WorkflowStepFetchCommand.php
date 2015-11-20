@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Commands\Workflows;
+namespace Cookbook\Workflows\Commands\WorkflowSteps;
 
 use Cookbook\Core\Bus\RepositoryCommand;
 

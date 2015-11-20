@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Commands\WorkflowSteps;
+namespace Cookbook\Workflows\Commands\WorkflowPoints;
 
 use Cookbook\Core\Bus\RepositoryCommand;
 
 /**
- * WorkflowStepDeleteCommand class
+ * WorkflowPointGetCommand class
  * 
- * Command for deleting workflow step
+ * Command for getting workflow points
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -23,7 +23,7 @@ use Cookbook\Core\Bus\RepositoryCommand;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowStepDeleteCommand extends RepositoryCommand
+class WorkflowPointGetCommand extends RepositoryCommand
 {
 
 }

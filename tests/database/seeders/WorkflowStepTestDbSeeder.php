@@ -12,7 +12,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 /**
- * WorkflowTestDbSeeder
+ * WorkflowStepTestDbSeeder
  * 
  * Seeds Database with needed entries before tests
  * 
@@ -25,21 +25,37 @@ use Illuminate\Support\Facades\DB;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowTestDbSeeder extends Seeder {
+class WorkflowStepTestDbSeeder extends Seeder {
 
 	public function run()
 	{
-		DB::table('workflows')->truncate();
-		DB::table('workflows')->insert([
+		DB::table('workflow_steps')->truncate();
+		DB::table('workflow_steps')->insert([
 			[
-				'name' => 'Basic Publishing',
-				'description' => 'Testing workflows',
+				'workflow_id' => 1,
+				'from_id' => 1,
+				'to_id' => 2,
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
-				'name' => 'Compicated Editing & Publishing',
-				'description' => 'Testing workflows number 2',
+				'workflow_id' => 1,
+				'from_id' => 2,
+				'to_id' => 1,
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s")
+			],
+			[
+				'workflow_id' => 1,
+				'from_id' => 2,
+				'to_id' => 3,
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s")
+			],
+			[
+				'workflow_id' => 1,
+				'from_id' => 3,
+				'to_id' => 2,
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			]

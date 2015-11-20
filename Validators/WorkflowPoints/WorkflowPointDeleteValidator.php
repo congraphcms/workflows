@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Validators\Workflows;
+namespace Cookbook\Workflows\Validators\WorkflowPoints;
 
-use Cookbook\Contracts\Workflows\WorkflowRepositoryContract;
+use Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract;
 use Cookbook\Core\Bus\RepositoryCommand;
 use Cookbook\Core\Validation\Validator;
 
 
 /**
- * WorkflowFetchValidator class
+ * WorkflowPointDeleteValidator class
  * 
- * Validating command for fetching workflow
+ * Validating command for deleting workflow point
  * 
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -27,27 +27,27 @@ use Cookbook\Core\Validation\Validator;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowFetchValidator extends Validator
+class WorkflowPointDeleteValidator extends Validator
 {
 
-
 	/**
-	 * Repository for workflows
+	 * Repository for workflow points
 	 * 
-	 * @var \Cookbook\Contracts\Workflows\WorkflowRepositoryContract
+	 * @var \Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract
 	 */
-	protected $workflowRepository;
-
+	protected $workflowPointRepository;
+	
 	/**
-	 * Create new WorkflowFetchValidator
+	 * Create new WorkflowPointDeleteValidator
 	 * 
 	 * @return void
 	 */
-	public function __construct(WorkflowRepositoryContract $workflowRepository)
+	public function __construct(WorkflowPointRepositoryContract $workflowPointRepository)
 	{
+		$this->workflowPointRepository = $workflowPointRepository;
 		parent::__construct();
-		$this->workflowRepository = $workflowRepository;
-		$this->exception->setErrorKey('workflow');
+
+		$this->exception->setErrorKey('workflow-point');
 	}
 
 
@@ -63,6 +63,6 @@ class WorkflowFetchValidator extends Validator
 	 */
 	public function validate(RepositoryCommand $command)
 	{
-		$workflow = $this->workflowRepository->fetch($command->id);
+		$workflowPoint = $this->workflowPointRepository->fetch($command->id);
 	}
 }

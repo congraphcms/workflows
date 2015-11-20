@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Handlers\Commands\WorkflowSteps;
+namespace Cookbook\Workflows\Handlers\Commands\WorkflowPoints;
 
 
-use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
+use Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract;
 use Cookbook\Core\Bus\RepositoryCommandHandler;
 use Cookbook\Core\Bus\RepositoryCommand;
 
 /**
- * WorkflowStepFetchHandler class
+ * WorkflowPointGetHandler class
  * 
- * Handling command for fetching workflow step
+ * Handling command for getting workflow points
  * 
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -27,17 +27,17 @@ use Cookbook\Core\Bus\RepositoryCommand;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowStepFetchHandler extends RepositoryCommandHandler
+class WorkflowPointGetHandler extends RepositoryCommandHandler
 {
 
 	/**
-	 * Create new WorkflowStepFetchHandler
+	 * Create new WorkflowPointGetHandler
 	 * 
-	 * @param Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract $repository
+	 * @param Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract $repository
 	 * 
 	 * @return void
 	 */
-	public function __construct(WorkflowStepRepositoryContract $repository)
+	public function __construct(WorkflowPointRepositoryContract $repository)
 	{
 		parent::__construct($repository);
 	}
@@ -51,11 +51,14 @@ class WorkflowStepFetchHandler extends RepositoryCommandHandler
 	 */
 	public function handle(RepositoryCommand $command)
 	{
-		$workflowStep = $this->repository->fetch(
-			$command->id,
+		$workflowPoints = $this->repository->get(
+			(!empty($command->params['filter']))?$command->params['filter']:[],
+			(!empty($command->params['offset']))?$command->params['offset']:0,
+			(!empty($command->params['limit']))?$command->params['limit']:0,
+			(!empty($command->params['sort']))?$command->params['sort']:[],
 			(!empty($command->params['include']))?$command->params['include']:[]
 		);
 
-		return $workflowStep;
+		return $workflowPoints;
 	}
 }

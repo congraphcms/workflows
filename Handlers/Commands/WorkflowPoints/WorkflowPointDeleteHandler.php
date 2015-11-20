@@ -8,19 +8,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Handlers\Commands\Workflows;
+namespace Cookbook\Workflows\Handlers\Commands\WorkflowPoints;
 
 
 use Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract;
-use Cookbook\Contracts\Workflows\WorkflowRepositoryContract;
 use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
 use Cookbook\Core\Bus\RepositoryCommand;
 use Cookbook\Core\Bus\RepositoryCommandHandler;
 
 /**
- * WorkflowDeleteHandler class
+ * WorkflowPointDeleteHandler class
  * 
- * Handling command for deleting workflow
+ * Handling command for deleting workflow point
  * 
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -29,7 +28,7 @@ use Cookbook\Core\Bus\RepositoryCommandHandler;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowDeleteHandler extends RepositoryCommandHandler
+class WorkflowPointDeleteHandler extends RepositoryCommandHandler
 {
 
 	/**
@@ -40,27 +39,17 @@ class WorkflowDeleteHandler extends RepositoryCommandHandler
 	protected $workflowStepRepository;
 
 	/**
-	 * Repository for workflow points
+	 * Create new WorkflowPointDeleteHandler
 	 * 
-	 * @var \Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract
-	 */
-	protected $workflowPointRepository;
-
-
-	/**
-	 * Create new WorkflowDeleteHandler
-	 * 
-	 * @param Cookbook\Contracts\Workflows\WorkflowRepositoryContract $repository
+	 * @param Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract $repository
 	 * 
 	 * @return void
 	 */
 	public function __construct(
-		WorkflowRepositoryContract $repository, 
-		WorkflowPointRepositoryContract $workflowPointRepository, 
+		WorkflowPointRepositoryContract $repository,
 		WorkflowStepRepositoryContract $workflowStepRepository
 	)
 	{
-		$this->workflowPointRepository = $workflowPointRepository;
 		$this->workflowStepRepository = $workflowStepRepository;
 		parent::__construct($repository);
 	}
@@ -74,9 +63,8 @@ class WorkflowDeleteHandler extends RepositoryCommandHandler
 	 */
 	public function handle(RepositoryCommand $command)
 	{
-		$workflow = $this->repository->delete($command->id);
-		$this->workflowPointRepository->deleteByWorkflow($workflow->id);
+		$workflowPoint = $this->repository->delete($command->id);
 
-		return $workflow->id;
+		return $workflowPoint->id;
 	}
 }

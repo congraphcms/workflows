@@ -10,6 +10,7 @@
 
 namespace Cookbook\Workflows\Validators\Workflows;
 
+use Cookbook\Contracts\Workflows\WorkflowRepositoryContract;
 use Cookbook\Core\Bus\RepositoryCommand;
 use Cookbook\Core\Validation\Validator;
 
@@ -51,7 +52,7 @@ class WorkflowUpdateValidator extends Validator
 	{
 
 		$this->rules = [
-			'name'					=> 'required|min:3|max:250',
+			'name'					=> 'sometimes|required|min:3|max:250',
 			'description'			=> 'sometimes'
 		];
 

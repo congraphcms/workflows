@@ -37,7 +37,26 @@ class CreateWorkflowTables extends Migration {
 		Schema::create('workflows', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
-			$table->string('description');
+			$table->string('description')->default('');
+			$table->timestamps();
+		});
+
+		Schema::create('workflow_points', function (Blueprint $table) {
+			$table->increments('id');
+			$table->integer('workflow_id')->usigned();
+			$table->string('status', 50);
+			$table->string('action', 50);
+			$table->string('name', 250);
+			$table->string('description')->default('');
+			$table->integer('sort_order')->default(0);
+			$table->timestamps();
+		});
+
+		Schema::create('workflow_steps', function (Blueprint $table) {
+			$table->increments('id');
+			$table->integer('workflow_id')->usigned();
+			$table->integer('from_id')->usigned();
+			$table->integer('to_id')->usigned();
 			$table->timestamps();
 		});
 	}
@@ -48,7 +67,9 @@ class CreateWorkflowTables extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('locales');
+		Schema::drop('workflows');
+		Schema::drop('workflow_points');
+		Schema::drop('workflow_steps');
 	}
 
 }

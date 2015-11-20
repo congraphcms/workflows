@@ -87,7 +87,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		$workflowStepId = $this->db->table('workflow_steps')->insertGetId($model);
 
 		// get workflow step
-		$workflowStep = $this->fetch($localeId);
+		$workflowStep = $this->fetch($workflowStepId);
 
 		if(!$workflowStep)
 		{
@@ -153,6 +153,39 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		Trunk::forgetType('workflow-step');
 		return $workflowStep;
 	}
+
+	/**
+	 * Delete workflow steps by workflow from database
+	 * 
+	 * @param integer $workflowId - ID of workflow
+	 * 
+	 * @return boolean
+	 */
+	public function deleteByWorkflow($workflowId)
+	{	
+		// delete the workflow steps
+		$this->db->table('workflow_steps')->where('workflow_id', '=', $workflowId)->delete();
+		Trunk::forgetType('workflow-step');
+		return true;
+	}
+
+	/**
+	 * Delete workflow steps by workflow point
+	 * 
+	 * @param integer $pointId - ID of workflow point
+	 * 
+	 * @return boolean
+	 */
+	public function deleteByPoint($pointId)
+	{	
+		// delete the workflow steps
+		$this->db->table('workflow_steps')
+				 ->where('from_id', '=', $pointId)
+				 ->orWhere('to_id', '=', $pointId)
+				 ->delete();
+		Trunk::forgetType('workflow-step');
+		return true;
+	}
 	
 
 
@@ -172,10 +205,6 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 	 */
 	protected function _fetch($id, $include = [])
 	{
-		if(is_string($id) && preg_match('/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/', $id))
-		{
-			return $this->fetchByCode($id, $include);
-		}
 		$params = func_get_args();
 		
 		if(Trunk::has($params, 'workflow-step'))
@@ -199,6 +228,14 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		$workflowStep->workflow = new StdClass();
 		$workflowStep->workflow->id = $workflowStep->workflow_id;
 		$workflowStep->workflow->type = 'workflow';
+
+		$workflowStep->from = new StdClass();
+		$workflowStep->from->id = $workflowStep->from_id;
+		$workflowStep->from->type = 'workflow-point';
+
+		$workflowStep->to = new StdClass();
+		$workflowStep->to->id = $workflowStep->to_id;
+		$workflowStep->to->type = 'workflow-point';
 
 		$timezone = (Config::get('app.timezone'))?Config::get('app.timezone'):'UTC';
 		$workflowStep->created_at = Carbon::parse($workflowStep->created_at)->tz($timezone);
@@ -253,9 +290,19 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		
 		foreach ($workflowSteps as &$workflowStep) {
 			$workflowStep->type = 'workflow-step';
+
 			$workflowStep->workflow = new StdClass();
 			$workflowStep->workflow->id = $workflowStep->workflow_id;
 			$workflowStep->workflow->type = 'workflow';
+
+			$workflowStep->from = new StdClass();
+			$workflowStep->from->id = $workflowStep->from_id;
+			$workflowStep->from->type = 'workflow-point';
+
+			$workflowStep->to = new StdClass();
+			$workflowStep->to->id = $workflowStep->to_id;
+			$workflowStep->to->type = 'workflow-point';
+
 			$timezone = (Config::get('app.timezone'))?Config::get('app.timezone'):'UTC';
 			$workflowStep->created_at = Carbon::parse($workflowStep->created_at)->tz($timezone);
 			$workflowStep->updated_at = Carbon::parse($workflowStep->updated_at)->tz($timezone);

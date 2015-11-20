@@ -18,6 +18,12 @@ use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler;
 use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler;
 use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler;
 
+use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler;
+use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler;
+use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler;
+use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler;
+use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler;
+
 use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler;
 use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler;
 use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler;
@@ -87,6 +93,19 @@ class HandlersServiceProvider extends ServiceProvider {
 			'Cookbook\Workflows\Commands\Workflows\WorkflowGetCommand' => 
 				'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler@handle',
 
+			// WorkflowPoints
+			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand' => 
+				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler@handle',
+			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand' => 
+				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler@handle',
+			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand' => 
+				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler@handle',
+			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand' => 
+				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler@handle',
+			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand' => 
+				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler@handle',
+
+
 			// WorkflowSteps
 			'Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand' => 
 				'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler@handle',
@@ -122,7 +141,11 @@ class HandlersServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler', function($app){
-			return new WorkflowDeleteHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+			return new WorkflowDeleteHandler(
+				$app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'),
+				$app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'),
+				$app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract')
+			);
 		});
 
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler', function($app){
@@ -133,27 +156,53 @@ class HandlersServiceProvider extends ServiceProvider {
 			return new WorkflowGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
 		});
 
+		// WorkflowPoints
+		
+		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler', function($app){
+			return new WorkflowPointCreateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		});
+
+		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler', function($app){
+			return new WorkflowPointUpdateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		});
+
+		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler', function($app){
+			return new WorkflowPointDeleteHandler(
+				$app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'),
+				$app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract')
+			);
+		});
+
+		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler', function($app){
+			return new WorkflowPointFetchHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		});
+
+		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler', function($app){
+			return new WorkflowPointGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		});
+
+
 
 		// WorkflowSteps
 		
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler', function($app){
-			return new WorkflowStepCreateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+			return new WorkflowStepCreateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler', function($app){
-			return new WorkflowStepUpdateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+			return new WorkflowStepUpdateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler', function($app){
-			return new WorkflowStepDeleteHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+			return new WorkflowStepDeleteHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler', function($app){
-			return new WorkflowStepFetchHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+			return new WorkflowStepFetchHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
 		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler', function($app){
-			return new WorkflowStepGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+			return new WorkflowStepGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 	}
 
@@ -172,6 +221,13 @@ class HandlersServiceProvider extends ServiceProvider {
 			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler',
 			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler',
 			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler',
+
+			// WorkflowPoints
+			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler',
+			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler',
+			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler',
+			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler',
+			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler',
 
 			// WorkflowSteps
 			'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler',

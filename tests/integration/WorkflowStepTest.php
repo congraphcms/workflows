@@ -4,9 +4,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Debug\Dumper;
 
 require_once(__DIR__ . '/../database/seeders/WorkflowTestDbSeeder.php');
+require_once(__DIR__ . '/../database/seeders/WorkflowPointTestDbSeeder.php');
+require_once(__DIR__ . '/../database/seeders/WorkflowStepTestDbSeeder.php');
 require_once(__DIR__ . '/../database/seeders/ClearDB.php');
 
-class WorkflowTest extends Orchestra\Testbench\TestCase
+class WorkflowStepTest extends Orchestra\Testbench\TestCase
 {
 
 	public function setUp()
@@ -20,6 +22,14 @@ class WorkflowTest extends Orchestra\Testbench\TestCase
 
 		$this->artisan('db:seed', [
 			'--class' => 'WorkflowTestDbSeeder'
+		]);
+
+		$this->artisan('db:seed', [
+			'--class' => 'WorkflowPointTestDbSeeder'
+		]);
+
+		$this->artisan('db:seed', [
+			'--class' => 'WorkflowStepTestDbSeeder'
 		]);
 
 		$this->d = new Dumper();
@@ -64,29 +74,35 @@ class WorkflowTest extends Orchestra\Testbench\TestCase
 		return ['Cookbook\Workflows\WorkflowsServiceProvider', 'Cookbook\Core\CoreServiceProvider'];
 	}
 
-	public function testCreateWorkflow()
+	public function testCreateWorkflowStep()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$params = [
-			'name' => 'Test workflow',
-			'description' => 'Just another description'
+			'workflow_id' => 1,
+			'from_id' => 3,
+			'to_id' => 1
 		];
 
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowCreateCommand($params));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand($params));
 		
 		$this->d->dump($result->toArray());
-		$this->assertEquals('Test workflow', $result->name);
-		$this->assertEquals('Just another description', $result->description);
+		$this->assertEquals(1, $result->workflow_id);
+		$this->assertEquals(1, $result->workflow->id);
+		$this->assertEquals(3, $result->from_id);
+		$this->assertEquals(3, $result->from->id);
+		$this->assertEquals(1, $result->to_id);
+		$this->assertEquals(1, $result->to->id);
 		
-		$this->seeInDatabase('workflows', [
-			'id' => 3, 
-			'name' => 'Test workflow',
-			'description' => 'Just another description'
+		$this->seeInDatabase('workflow_steps', [
+			'id' => 5, 
+			'workflow_id' => 1,
+			'from_id' => 3,
+			'to_id' => 1
 		]);
 	}
 
@@ -97,19 +113,21 @@ class WorkflowTest extends Orchestra\Testbench\TestCase
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$params = [
-			'name' => ''
+		$params = [ 
+			'workflow_id' => 5,
+			'from_id' => 3,
+			'to_id' => 1
 		];
 
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowCreateCommand($params));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand($params));
 		
 	}
 
-	public function testUpdateWorkflow()
+	public function testUpdateWorkflowStep()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
@@ -117,17 +135,16 @@ class WorkflowTest extends Orchestra\Testbench\TestCase
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
 		$params = [
-			'name' => 'Changed Name',
-			'description' => ''
+			'to_id' => 3
 		];
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand($params, 1));
 		
 		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
-		$this->assertEquals('Changed Name', $result->name);
-		$this->assertEquals('', $result->description);
+		$this->assertEquals(3, $result->to_id);
+		$this->assertEquals(1, $result->from_id);
 		
 		$this->d->dump($result->toArray());
 	}
@@ -143,20 +160,20 @@ class WorkflowTest extends Orchestra\Testbench\TestCase
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
 		$params = [
-			'name' => ''
+			'from_id' => 3,
 		];
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand($params, 1));
 	}
 
-	public function testDeleteWorkflow()
+	public function testDeleteWorkflowStep()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowDeleteCommand([], 1));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand([], 1));
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
@@ -173,36 +190,41 @@ class WorkflowTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowDeleteCommand([], 133));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand([], 133));
 	}
 	
-	public function testFetchWorkflow()
+	public function testFetchWorkflowStep()
 	{
-
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowFetchCommand([], 1));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand([], 1));
 
 		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
-		$this->assertEquals('Basic Publishing', $result->name);
+		$this->assertEquals(1, $result->id);
+		$this->assertEquals(1, $result->workflow_id);
+		$this->assertEquals(1, $result->workflow->id);
+		$this->assertEquals(1, $result->from_id);
+		$this->assertEquals(1, $result->from->id);
+		$this->assertEquals(2, $result->to_id);
+		$this->assertEquals(2, $result->to->id);
 		$this->d->dump($result->toArray());
 	}
 
 	
-	public function testGetWorkflows()
+	public function testGetWorkflowSteps()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\Workflows\WorkflowGetCommand([]));
+		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand([]));
 
 		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Collection);
-		$this->assertEquals(2, count($result));
+		$this->assertEquals(4, count($result));
 		$this->d->dump($result->toArray());
 
 	}

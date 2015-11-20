@@ -8,18 +8,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Validators\WorkflowSteps;
+namespace Cookbook\Workflows\Validators\WorkflowPoints;
 
 use Cookbook\Core\Bus\RepositoryCommand;
 use Cookbook\Core\Validation\Validator;
 
-use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
+use Cookbook\Contracts\Workflows\WorkflowRepositoryContract;
 
 
 /**
- * WorkflowStepGetValidator class
+ * WorkflowPointGetValidator class
  * 
- * Validating command for getting workflow steps
+ * Validating command for getting workflow points
  * 
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -28,7 +28,7 @@ use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class WorkflowStepGetValidator extends Validator
+class WorkflowPointGetValidator extends Validator
 {
 
 	/**
@@ -53,7 +53,7 @@ class WorkflowStepGetValidator extends Validator
 	protected $defaultSorting;
 
 	/**
-	 * Create new WorkflowStepGetValidator
+	 * Create new WorkflowPointGetValidator
 	 * 
 	 * @return void
 	 */
@@ -62,17 +62,21 @@ class WorkflowStepGetValidator extends Validator
 
 		$this->availableSorting = [
 			'id',
-			'workflow_id',
-			'from_id',
-			'to_id',
+			'status',
+			'action',
+			'name',
+			'description',
+			'sort_order',
 			'created_at'
 		];
 
 		$this->availableFilters = [
 			'id' 				=> ['e', 'ne', 'lt', 'lte', 'gt', 'gte', 'in', 'nin'],
 			'workflow_id'		=> ['e', 'ne', 'in', 'nin'],
-			'from_id'			=> ['e', 'ne', 'in', 'nin'],
-			'to_id'				=> ['e', 'ne', 'in', 'nin'],
+			'status'			=> ['e', 'ne', 'in', 'nin'],
+			'action'			=> ['e', 'ne', 'in', 'nin'],
+			'name'				=> ['e', 'ne', 'in', 'nin'],
+			'description'		=> ['e', 'ne', 'in', 'nin'],
 			'created_at'		=> ['lt', 'lte', 'gt', 'gte']
 		];
 

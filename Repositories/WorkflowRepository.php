@@ -86,7 +86,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		$workflowId = $this->db->table('workflows')->insertGetId($model);
 
 		// get workflow
-		$workflow = $this->fetch($localeId);
+		$workflow = $this->fetch($workflowId);
 
 		if(!$workflow)
 		{
@@ -194,26 +194,21 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 			throw new NotFoundException(['There is no workflow with that ID.']);
 		}
 
-		$steps = $this->db->table('workflow_steps')
-						  ->select('id', 'default')
+		$points = $this->db->table('workflow_points')
+						  ->select('id')
 						  ->where('workflow_id', '=', $id)
 						  ->orderBy('sort_order')
 						  ->orderBy('id')
 						  ->get();
 		
-		$workflow->steps = [];
-		foreach ($steps as $step) 
+		$workflow->points = [];
+		foreach ($points as $point) 
 		{
-			$workflowStep = new StdClass();
-			$workflowStep->id = $step->id;
-			$workflowStep->type = 'workflow-step';
-
-			if($step->default)
-			{
-				$workflow->default_step = $workflowStep;
-			}
+			$workflowPoint = new StdClass();
+			$workflowPoint->id = $point->id;
+			$workflowPoint->type = 'workflow-point';
 			
-			$workflow->steps[] = $workflowStep;
+			$workflow->points[] = $workflowPoint;
 		}
 
 		$workflow->type = 'workflow';
@@ -279,12 +274,12 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 			$workflowIds[] = $workflow->id;
 		}
 
-		$steps = [];
+		$points = [];
 		
 		if( ! empty($workflowIds) )
 		{
-			$steps = $this->db->table('workflow_steps')
-						  ->select('id', 'default')
+			$points = $this->db->table('workflow_points')
+						  ->select('id')
 						  ->whereIn('workflow_id', $workflowIds)
 						  ->orderBy('sort_order')
 						  ->orderBy('id')
@@ -292,22 +287,17 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		}
 		
 		
-		foreach ($steps as $step) 
+		foreach ($points as $point) 
 		{
-			$workflowStep = new StdClass();
-			$workflowStep->id = $step->id;
-			$workflowStep->type = 'workflow-step';
+			$workflowPoint = new StdClass();
+			$workflowPoint->id = $point->id;
+			$workflowPoint->type = 'workflow-point';
 
 			foreach ($workflows as &$workflow)
 			{
-				if($workflow->id == $step->workflow_id)
+				if($workflow->id == $point->workflow_id)
 				{
-					if($step->default)
-					{
-						$workflow->default_step = $workflowStep;
-					}
-
-					$workflow->steps[] = $workflowStep;
+					$workflow->points[] = $workflowPoint;
 					break;
 				}
 			}

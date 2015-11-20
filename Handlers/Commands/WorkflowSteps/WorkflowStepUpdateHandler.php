@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Handlers\Commands\Workflows;
+namespace Cookbook\Workflows\Handlers\Commands\WorkflowSteps;
 
 
 use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
