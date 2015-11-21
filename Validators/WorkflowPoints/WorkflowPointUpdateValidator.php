@@ -60,8 +60,8 @@ class WorkflowPointUpdateValidator extends Validator
 	{
 		$this->workflowPointRepository = $workflowPointRepository;
 		$this->rules = [
-			'status'				=> ['sometimes', 'required', 'min:3', 'max:50', 'regex:/^[0-9a-zA-Z-_]*$/'],
-			'endpoint'				=> ['sometimes', 'required', 'min:3', 'max:50', 'regex:/^[0-9a-zA-Z-_]*$/'],
+			'status'				=> ['sometimes', 'required', 'min:3', 'max:50', 'regex:/^[0-9a-z-_]*$/'],
+			'endpoint'				=> ['sometimes', 'required', 'min:3', 'max:50', 'regex:/^[0-9a-z-_]*$/'],
 			'action'				=> 'sometimes|required|min:3|max:250',
 			'name'					=> 'sometimes|required|min:3|max:250',
 			'description'			=> 'sometimes',
