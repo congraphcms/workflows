@@ -206,6 +206,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 	protected function _fetch($id, $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 		
 		if(Trunk::has($params, 'workflow-step'))
 		{
@@ -258,6 +259,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 	protected function _get($filter = [], $offset = 0, $limit = 0, $sort = [], $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 
 		if(Trunk::has($params, 'workflow-step'))
 		{

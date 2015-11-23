@@ -21,7 +21,7 @@ use Cookbook\Core\Repositories\UsesCache;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Config;
 use Carbon\Carbon;
-use StdClass;
+use stdClass;
 
 /**
  * WorkflowPointRepository class
@@ -295,6 +295,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 	protected function _fetch($id, $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 		
 		if(Trunk::has($params, 'workflow-point'))
 		{
@@ -314,7 +315,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		}
 
 		$workflowPoint->type = 'workflow-point';
-		$workflowPoint->workflow = new StdClass();
+		$workflowPoint->workflow = new stdClass();
 		$workflowPoint->workflow->id = $workflowPoint->workflow_id;
 		$workflowPoint->workflow->type = 'workflow';
 		$workflowPoint->steps = [];
@@ -328,7 +329,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		{
 			foreach ($workflowSteps as $step)
 			{
-				$workflowStep = new StdClass();
+				$workflowStep = new stdClass();
 				$workflowStep->id = $step->to_id;
 				$workflowStep->type = 'workflow-point';
 
@@ -357,6 +358,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 	protected function _get($filter = [], $offset = 0, $limit = 0, $sort = [], $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 
 		if(Trunk::has($params, 'workflow-point'))
 		{
@@ -394,7 +396,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		foreach ($workflowPoints as &$workflowPoint)
 		{
 			$workflowPoint->type = 'workflow-point';
-			$workflowPoint->workflow = new StdClass();
+			$workflowPoint->workflow = new stdClass();
 			$workflowPoint->workflow->id = $workflowPoint->workflow_id;
 			$workflowPoint->workflow->type = 'workflow';
 			$workflowPoint->steps = [];
@@ -425,7 +427,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 				{
 					if($step->from_id == $workflowPoint->id)
 					{
-						$workflowStep = new StdClass();
+						$workflowStep = new stdClass();
 						$workflowStep->id = $step->to_id;
 						$workflowStep->type = 'workflow-point';
 

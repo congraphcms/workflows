@@ -101,6 +101,7 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	{
 		$mappings = [
 			'workflow' => 'Cookbook\Workflows\Repositories\WorkflowRepository',
+			'workflow-point' => 'Cookbook\Workflows\Repositories\WorkflowPointRepository',
 			'workflow-step' => 'Cookbook\Workflows\Repositories\WorkflowStepRepository'
 		];
 

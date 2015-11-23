@@ -21,6 +21,7 @@ use Cookbook\Core\Repositories\UsesCache;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Config;
 use Carbon\Carbon;
+use stdClass;
 
 /**
  * WorkflowRepository class
@@ -171,11 +172,8 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 	 */
 	protected function _fetch($id, $include = [])
 	{
-		if(is_string($id) && preg_match('/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/', $id))
-		{
-			return $this->fetchByCode($id, $include);
-		}
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 		
 		if(Trunk::has($params, 'workflow'))
 		{
@@ -185,6 +183,11 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 			$meta = ['id' => $id, 'include' => $include];
 			$workflow->setMeta($meta);
 			return $workflow;
+		}
+
+		if(is_string($id) && preg_match('/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/', $id))
+		{
+			return $this->fetchByCode($id, $include);
 		}
 
 		$workflow = $this->db->table('workflows')->find($id);
@@ -204,7 +207,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		$workflow->points = [];
 		foreach ($points as $point) 
 		{
-			$workflowPoint = new StdClass();
+			$workflowPoint = new stdClass();
 			$workflowPoint->id = $point->id;
 			$workflowPoint->type = 'workflow-point';
 			
@@ -234,6 +237,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 	protected function _get($filter = [], $offset = 0, $limit = 0, $sort = [], $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 
 		if(Trunk::has($params, 'workflow'))
 		{
@@ -279,7 +283,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		if( ! empty($workflowIds) )
 		{
 			$points = $this->db->table('workflow_points')
-						  ->select('id')
+						  ->select('id', 'workflow_id')
 						  ->whereIn('workflow_id', $workflowIds)
 						  ->orderBy('sort_order')
 						  ->orderBy('id')
@@ -289,7 +293,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		
 		foreach ($points as $point) 
 		{
-			$workflowPoint = new StdClass();
+			$workflowPoint = new stdClass();
 			$workflowPoint->id = $point->id;
 			$workflowPoint->type = 'workflow-point';
 
