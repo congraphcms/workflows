@@ -43,9 +43,9 @@ class WorkflowsServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		// $this->publishes([
-		// 	__DIR__.'/config/cookbook.php' => config_path('cookbook.php'),
-		// ]);
+		$this->publishes([
+			__DIR__.'/database/migrations' => database_path('/migrations'),
+		]);
 	}
 
 	/**
