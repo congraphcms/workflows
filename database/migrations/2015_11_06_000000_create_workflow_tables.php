@@ -38,7 +38,8 @@ class CreateWorkflowTables extends Migration {
 			$table->increments('id');
 			$table->string('name');
 			$table->string('description')->default('');
-			$table->timestamps();
+			$table->timestamp('created_at')->nullable();
+			$table->timestamp('updated_at')->nullable();
 		});
 
 		Schema::create('workflow_points', function (Blueprint $table) {
@@ -52,7 +53,8 @@ class CreateWorkflowTables extends Migration {
 			$table->boolean('deleted')->default(0);
 			$table->string('description')->default('');
 			$table->integer('sort_order')->default(0);
-			$table->timestamps();
+			$table->timestamp('created_at')->nullable();
+			$table->timestamp('updated_at')->nullable();
 		});
 
 		Schema::create('workflow_steps', function (Blueprint $table) {
@@ -60,7 +62,8 @@ class CreateWorkflowTables extends Migration {
 			$table->integer('workflow_id')->usigned();
 			$table->integer('from_id')->usigned();
 			$table->integer('to_id')->usigned();
-			$table->timestamps();
+			$table->timestamp('created_at')->nullable();
+			$table->timestamp('updated_at')->nullable();
 		});
 	}
 	/**
