@@ -369,7 +369,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 				'include' => $include
 			];
 			$workflowPoints->setMeta($meta);
-			return $workflows;
+			return $workflowPoints;
 		}
 
 		$query = $this->db->table('workflow_points');
