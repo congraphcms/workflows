@@ -85,7 +85,7 @@ class WorkflowStepUpdateValidator extends Validator
 	public function validate(RepositoryCommand $command)
 	{
 		$workflowStep = $this->workflowStepRepository->fetch($command->id);
-		$this->validateParams($command->params, $this->rules, true);
+		$this->validateParams($command, $this->rules, true);
 
 		if( ! $this->exception->hasErrors() )
 		{

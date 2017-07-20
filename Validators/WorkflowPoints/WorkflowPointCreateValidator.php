@@ -95,7 +95,7 @@ class WorkflowPointCreateValidator extends Validator
 	 */
 	public function validate(RepositoryCommand $command)
 	{
-		$validator = $this->newValidator($command->params, $this->rules);
+		$validator = $this->newValidator($command, $this->rules);
 
 		if( isset($command->params['steps']) )
 		{
@@ -103,7 +103,7 @@ class WorkflowPointCreateValidator extends Validator
 		}
 		$this->setValidator($validator);
 
-		$this->validateParams($command->params, null, true);
+		$this->validateParams($command, null, true);
 
 		if( ! $this->exception->hasErrors() )
 		{
