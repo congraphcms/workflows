@@ -55,6 +55,10 @@ class CreateWorkflowTables extends Migration {
 			$table->integer('sort_order')->default(0);
 			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->nullable();
+
+			// create indexes
+			$table->index('workflow_id');
+			$table->index('status');
 		});
 
 		Schema::create('workflow_steps', function (Blueprint $table) {
@@ -64,6 +68,11 @@ class CreateWorkflowTables extends Migration {
 			$table->integer('to_id')->usigned();
 			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->nullable();
+
+			// create indexes
+			$table->index('workflow_id');
+			$table->index('from_id');
+			$table->index('to_id');
 		});
 	}
 	/**
