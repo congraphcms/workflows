@@ -20,6 +20,7 @@ use Cookbook\Core\Repositories\Model;
 use Cookbook\Core\Repositories\UsesCache;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use stdClass;
 
@@ -107,6 +108,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 			$workflowPoint = $this->fetch($workflowPointId);
 		} 
 		
+		Cache::forget('workflowPoints');
 
 		// and return newly created workflow point
 		return $workflowPoint;
@@ -152,6 +154,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 
 			$workflowPoint = $this->fetch($workflowPoint->id);
 		} 
+		Cache::forget('workflowPoints');
 
 		// and return workflow point
 		return $workflowPoint;
@@ -183,6 +186,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		// delete the workflow point
 		$this->db->table('workflow_points')->where('id', '=', $workflowPoint->id)->delete();
 		Trunk::forgetType('workflow-point');
+		Cache::forget('workflowPoints');
 		return $workflowPoint;
 	}
 
@@ -199,6 +203,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		$this->db->table('workflow_points')->where('workflow_id', '=', $workflowId)->delete();
 		$this->db->table('workflow_steps')->where('workflow_id', '=', $workflowId)->delete();
 		Trunk::forgetType('workflow-point');
+		Cache::forget('workflowPoints');
 		return true;
 	}
 	

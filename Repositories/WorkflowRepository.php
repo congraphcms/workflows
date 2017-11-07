@@ -20,6 +20,7 @@ use Cookbook\Core\Repositories\Model;
 use Cookbook\Core\Repositories\UsesCache;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use stdClass;
 
@@ -93,6 +94,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		{
 			throw new \Exception('Failed to insert workflow');
 		}
+		Cache::forget('workflows');
 
 		// and return newly created workflow
 		return $workflow;
@@ -125,6 +127,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 
 		Trunk::forgetType('workflow');
 		$workflow = $this->fetch($id);
+		Cache::forget('workflows');
 
 		// and return workflow
 		return $workflow;
@@ -151,6 +154,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		// delete the workflow
 		$this->db->table('workflows')->where('id', '=', $workflow->id)->delete();
 		Trunk::forgetType('workflow');
+		Cache::forget('workflows');
 		return $workflow;
 	}
 	

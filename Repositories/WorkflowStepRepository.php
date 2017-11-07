@@ -20,6 +20,7 @@ use Cookbook\Core\Repositories\Model;
 use Cookbook\Core\Repositories\UsesCache;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use StdClass;
 
@@ -93,6 +94,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		{
 			throw new \Exception('Failed to insert workflow step');
 		}
+		Cache::forget('workflowPoints');
 
 		// and return newly created workflow step
 		return $workflowStep;
@@ -125,6 +127,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 
 		Trunk::forgetType('workflow-step');
 		$workflowStep = $this->fetch($id);
+		Cache::forget('workflowPoints');
 
 		// and return workflow step
 		return $workflowStep;
@@ -151,6 +154,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		// delete the workflow
 		$this->db->table('workflow_steps')->where('id', '=', $workflowStep->id)->delete();
 		Trunk::forgetType('workflow-step');
+		Cache::forget('workflowPoints');
 		return $workflowStep;
 	}
 
@@ -166,6 +170,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		// delete the workflow steps
 		$this->db->table('workflow_steps')->where('workflow_id', '=', $workflowId)->delete();
 		Trunk::forgetType('workflow-step');
+		Cache::forget('workflowPoints');
 		return true;
 	}
 
@@ -184,6 +189,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 				 ->orWhere('to_id', '=', $pointId)
 				 ->delete();
 		Trunk::forgetType('workflow-step');
+		Cache::forget('workflowPoints');
 		return true;
 	}
 	
