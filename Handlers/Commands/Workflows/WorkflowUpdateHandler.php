@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/workflows package.
+ * This file is part of the congraph/workflows package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Handlers\Commands\Workflows;
+namespace Congraph\Workflows\Handlers\Commands\Workflows;
 
 
-use Cookbook\Contracts\Workflows\WorkflowRepositoryContract;
-use Cookbook\Core\Bus\RepositoryCommandHandler;
-use Cookbook\Core\Bus\RepositoryCommand;
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
+use Congraph\Core\Bus\RepositoryCommandHandler;
+use Congraph\Core\Bus\RepositoryCommand;
 
 /**
  * WorkflowUpdateHandler class
@@ -23,7 +23,7 @@ use Cookbook\Core\Bus\RepositoryCommand;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/workflows
+ * @package 	congraph/workflows
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -33,7 +33,7 @@ class WorkflowUpdateHandler extends RepositoryCommandHandler
 	/**
 	 * Create new WorkflowUpdateHandler
 	 * 
-	 * @param Cookbook\Contracts\Workflows\WorkflowRepositoryContract $repository
+	 * @param Congraph\Contracts\Workflows\WorkflowRepositoryContract $repository
 	 * 
 	 * @return void
 	 */
@@ -45,7 +45,7 @@ class WorkflowUpdateHandler extends RepositoryCommandHandler
 	/**
 	 * Handle RepositoryCommand
 	 * 
-	 * @param Cookbook\Core\Bus\RepositoryCommand $command
+	 * @param Congraph\Core\Bus\RepositoryCommand $command
 	 * 
 	 * @return void
 	 */

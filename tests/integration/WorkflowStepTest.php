@@ -59,7 +59,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 			'driver'   	=> 'mysql',
 			'host'      => '127.0.0.1',
 			'port'		=> '3306',
-			'database'	=> 'cookbook_testbench',
+			'database'	=> 'congraph_testbench',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',
@@ -71,7 +71,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 
 	protected function getPackageProviders($app)
 	{
-		return ['Cookbook\Workflows\WorkflowsServiceProvider', 'Cookbook\Core\CoreServiceProvider'];
+		return ['Congraph\Workflows\WorkflowsServiceProvider', 'Congraph\Core\CoreServiceProvider'];
 	}
 
 	public function testCreateWorkflowStep()
@@ -88,7 +88,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand($params));
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals(1, $result->workflow_id);
@@ -107,7 +107,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testCreateException()
 	{
@@ -123,7 +123,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand($params));
 		
 	}
 
@@ -138,9 +138,9 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 			'to_id' => 3
 		];
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand($params, 1));
 		
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
 		$this->assertEquals(3, $result->to_id);
@@ -150,7 +150,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testUpdateException()
 	{
@@ -163,7 +163,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 			'from_id' => 3,
 		];
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand($params, 1));
 	}
 
 	public function testDeleteWorkflowStep()
@@ -173,7 +173,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand([], 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand([], 1));
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
@@ -181,7 +181,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\NotFoundException
+	 * @expectedException \Congraph\Core\Exceptions\NotFoundException
 	 */
 	public function testDeleteException()
 	{
@@ -190,7 +190,7 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand([], 133));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand([], 133));
 	}
 	
 	public function testFetchWorkflowStep()
@@ -200,9 +200,9 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand([], 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand([], 1));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
 		$this->assertEquals(1, $result->workflow_id);
@@ -221,9 +221,9 @@ class WorkflowStepTest extends Orchestra\Testbench\TestCase
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand([]));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand([]));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Collection);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
 		$this->assertEquals(4, count($result));
 		$this->d->dump($result->toArray());
 

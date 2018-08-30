@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/workflows package.
+ * This file is part of the congraph/workflows package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Repositories;
+namespace Congraph\Workflows\Repositories;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +21,7 @@ use Illuminate\Support\ServiceProvider;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/workflows
+ * @package 	congraph/workflows
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -60,34 +60,34 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	 */
 	protected function registerRepositories()
 	{
-		$this->app->singleton('Cookbook\Workflows\Repositories\WorkflowRepository', function($app) {
+		$this->app->singleton('Congraph\Workflows\Repositories\WorkflowRepository', function($app) {
 			return new WorkflowRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Cookbook\Workflows\Repositories\WorkflowRepository', 'Cookbook\Contracts\Workflows\WorkflowRepositoryContract'
+			'Congraph\Workflows\Repositories\WorkflowRepository', 'Congraph\Contracts\Workflows\WorkflowRepositoryContract'
 		);
 
-		$this->app->singleton('Cookbook\Workflows\Repositories\WorkflowPointRepository', function($app) {
+		$this->app->singleton('Congraph\Workflows\Repositories\WorkflowPointRepository', function($app) {
 			return new WorkflowPointRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Cookbook\Workflows\Repositories\WorkflowPointRepository', 'Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'
+			'Congraph\Workflows\Repositories\WorkflowPointRepository', 'Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'
 		);
 
-		$this->app->singleton('Cookbook\Workflows\Repositories\WorkflowStepRepository', function($app) {
+		$this->app->singleton('Congraph\Workflows\Repositories\WorkflowStepRepository', function($app) {
 			return new WorkflowStepRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Cookbook\Workflows\Repositories\WorkflowStepRepository', 'Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'
+			'Congraph\Workflows\Repositories\WorkflowStepRepository', 'Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'
 		);
 
 	}
@@ -100,12 +100,12 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	protected function mapObjectResolvers()
 	{
 		$mappings = [
-			'workflow' => 'Cookbook\Workflows\Repositories\WorkflowRepository',
-			'workflow-point' => 'Cookbook\Workflows\Repositories\WorkflowPointRepository',
-			'workflow-step' => 'Cookbook\Workflows\Repositories\WorkflowStepRepository'
+			'workflow' => 'Congraph\Workflows\Repositories\WorkflowRepository',
+			'workflow-point' => 'Congraph\Workflows\Repositories\WorkflowPointRepository',
+			'workflow-step' => 'Congraph\Workflows\Repositories\WorkflowStepRepository'
 		];
 
-		$this->app->make('Cookbook\Contracts\Core\ObjectResolverContract')->maps($mappings);
+		$this->app->make('Congraph\Contracts\Core\ObjectResolverContract')->maps($mappings);
 	}
 	/**
 	 * Get the services provided by the provider.
@@ -115,10 +115,10 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	public function provides()
 	{
 		return [
-			'Cookbook\Workflows\Repositories\WorkflowRepository',
-			'Cookbook\Contracts\Workflows\WorkflowRepositoryContract',
-			'Cookbook\Workflows\Repositories\WorkflowStepRepository',
-			'Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'
+			'Congraph\Workflows\Repositories\WorkflowRepository',
+			'Congraph\Contracts\Workflows\WorkflowRepositoryContract',
+			'Congraph\Workflows\Repositories\WorkflowStepRepository',
+			'Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'
 		];
 	}
 

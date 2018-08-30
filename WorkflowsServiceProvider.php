@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/workflows package.
+ * This file is part of the congraph/workflows package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows;
+namespace Congraph\Workflows;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +21,7 @@ use Illuminate\Support\ServiceProvider;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/workflows
+ * @package 	congraph/workflows
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -33,7 +33,7 @@ class WorkflowsServiceProvider extends ServiceProvider {
 	* @return void
 	*/
 	public function register() {
-		// $this->mergeConfigFrom(realpath(__DIR__ . '/config/cookbook.php'), 'cookbook');
+		// $this->mergeConfigFrom(realpath(__DIR__ . '/config/congraph.php'), 'congraph');
 		$this->registerServiceProviders();
 	}
 
@@ -57,19 +57,19 @@ class WorkflowsServiceProvider extends ServiceProvider {
 
 		// Repositories
 		// -----------------------------------------------------------------------------
-		$this->app->register('Cookbook\Workflows\Repositories\RepositoriesServiceProvider');
+		$this->app->register('Congraph\Workflows\Repositories\RepositoriesServiceProvider');
 		
 		// Handlers
 		// -----------------------------------------------------------------------------
-		$this->app->register('Cookbook\Workflows\Handlers\HandlersServiceProvider');
+		$this->app->register('Congraph\Workflows\Handlers\HandlersServiceProvider');
 
 		// Validators
 		// -----------------------------------------------------------------------------
-		$this->app->register('Cookbook\Workflows\Validators\ValidatorsServiceProvider');
+		$this->app->register('Congraph\Workflows\Validators\ValidatorsServiceProvider');
 
 		// Commands
 		// -----------------------------------------------------------------------------
-		$this->app->register('Cookbook\Workflows\Commands\CommandsServiceProvider');
+		$this->app->register('Congraph\Workflows\Commands\CommandsServiceProvider');
 
 	}
 

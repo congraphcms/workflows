@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/workflows package.
+ * This file is part of the congraph/workflows package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Validators\WorkflowSteps;
+namespace Congraph\Workflows\Validators\WorkflowSteps;
 
-use Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract;
-use Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract;
-use Cookbook\Core\Bus\RepositoryCommand;
-use Cookbook\Core\Validation\Validator;
+use Congraph\Contracts\Workflows\WorkflowPointRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowStepRepositoryContract;
+use Congraph\Core\Bus\RepositoryCommand;
+use Congraph\Core\Validation\Validator;
 
 
 /**
@@ -24,7 +24,7 @@ use Cookbook\Core\Validation\Validator;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/workflows
+ * @package 	congraph/workflows
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -34,14 +34,14 @@ class WorkflowStepUpdateValidator extends Validator
 	/**
 	 * Repository for workflows
 	 * 
-	 * @var \Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract
+	 * @var \Congraph\Contracts\Workflows\WorkflowStepRepositoryContract
 	 */
 	protected $workflowStepRepository;
 
 	/**
 	 * Repository for workflow points
 	 * 
-	 * @var \Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract
+	 * @var \Congraph\Contracts\Workflows\WorkflowStepRepositoryContract
 	 */
 	protected $workflowPointRepository;
 
@@ -75,7 +75,7 @@ class WorkflowStepUpdateValidator extends Validator
 	/**
 	 * Validate RepositoryCommand
 	 * 
-	 * @param Cookbook\Core\Bus\RepositoryCommand $command
+	 * @param Congraph\Core\Bus\RepositoryCommand $command
 	 * 
 	 * @todo  Create custom validation for all db related checks (DO THIS FOR ALL VALIDATORS)
 	 * @todo  Check all db rules | make validators on repositories

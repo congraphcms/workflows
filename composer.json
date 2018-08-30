@@ -1,43 +1,26 @@
 {
-    "name": "cookbook/workflows",
-
+    "name": "congraph/workflows",
     "description": "",
-
     "authors": [
         {
             "name": "Nikola Plavsic",
             "email": "nikolaplavsic@gmail.com"
         }
     ],
-
     "require": {
         "php": ">=5.4.0",
-        "cookbook/core": "dev-master",
-        "cookbook/contracts": "dev-master"
+        "congraph/core": "self.version",
+        "congraph/contracts": "self.version"
     },
-
-    "repositories": [
-        {
-            "type": "git",
-            "url":  "git@bitbucket.org:cookbookcms/core.git"
-        },
-        {
-            "type": "git",
-            "url":  "git@bitbucket.org:cookbookcms/contracts.git"
-        }
-    ],
-
     "require-dev": {
         "phpunit/phpunit": "4.5.*",
         "orchestra/testbench": "3.1.*"
     },
-
     "autoload": {
         "psr-4": {
-            "Cookbook\\Workflows\\": ""
+            "Congraph\\Workflows\\": ""
         },
         "classmap": []
     },
-
     "minimum-stability": "dev"
 }

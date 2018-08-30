@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/workflows package.
+ * This file is part of the congraph/workflows package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,27 +8,27 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Workflows\Handlers;
+namespace Congraph\Workflows\Handlers;
 
 use Illuminate\Support\ServiceProvider;
 
-use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler;
-use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler;
-use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler;
-use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler;
-use Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler;
+use Congraph\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler;
+use Congraph\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler;
+use Congraph\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler;
+use Congraph\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler;
+use Congraph\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler;
 
-use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler;
 
-use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler;
-use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler;
+use Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler;
 
 /**
  * HandlersServiceProvider service provider for handlers
@@ -39,7 +39,7 @@ use Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/workflows
+ * @package 	congraph/workflows
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -82,41 +82,41 @@ class HandlersServiceProvider extends ServiceProvider {
 		
 		$mappings = [
 			// Workflows
-			'Cookbook\Workflows\Commands\Workflows\WorkflowCreateCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler@handle',
-			'Cookbook\Workflows\Commands\Workflows\WorkflowUpdateCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler@handle',
-			'Cookbook\Workflows\Commands\Workflows\WorkflowDeleteCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler@handle',
-			'Cookbook\Workflows\Commands\Workflows\WorkflowFetchCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler@handle',
-			'Cookbook\Workflows\Commands\Workflows\WorkflowGetCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler@handle',
+			'Congraph\Workflows\Commands\Workflows\WorkflowCreateCommand' => 
+				'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler@handle',
+			'Congraph\Workflows\Commands\Workflows\WorkflowUpdateCommand' => 
+				'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler@handle',
+			'Congraph\Workflows\Commands\Workflows\WorkflowDeleteCommand' => 
+				'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler@handle',
+			'Congraph\Workflows\Commands\Workflows\WorkflowFetchCommand' => 
+				'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler@handle',
+			'Congraph\Workflows\Commands\Workflows\WorkflowGetCommand' => 
+				'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler@handle',
 
 			// WorkflowPoints
-			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler@handle',
 
 
 			// WorkflowSteps
-			'Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler@handle',
-			'Cookbook\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand' => 
-				'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler@handle',
+			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand' => 
+				'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler@handle',
 
 		];
 
@@ -132,77 +132,77 @@ class HandlersServiceProvider extends ServiceProvider {
 		
 		// Workflows
 		
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler', function($app){
-			return new WorkflowCreateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler', function($app){
+			return new WorkflowCreateHandler($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler', function($app){
-			return new WorkflowUpdateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler', function($app){
+			return new WorkflowUpdateHandler($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler', function($app){
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler', function($app){
 			return new WorkflowDeleteHandler(
-				$app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'),
-				$app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'),
-				$app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract')
+				$app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'),
+				$app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'),
+				$app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract')
 			);
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler', function($app){
-			return new WorkflowFetchHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler', function($app){
+			return new WorkflowFetchHandler($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler', function($app){
-			return new WorkflowGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler', function($app){
+			return new WorkflowGetHandler($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
 		});
 
 		// WorkflowPoints
 		
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler', function($app){
-			return new WorkflowPointCreateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler', function($app){
+			return new WorkflowPointCreateHandler($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler', function($app){
-			return new WorkflowPointUpdateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler', function($app){
+			return new WorkflowPointUpdateHandler($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler', function($app){
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler', function($app){
 			return new WorkflowPointDeleteHandler(
-				$app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'),
-				$app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract')
+				$app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'),
+				$app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract')
 			);
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler', function($app){
-			return new WorkflowPointFetchHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler', function($app){
+			return new WorkflowPointFetchHandler($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler', function($app){
-			return new WorkflowPointGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler', function($app){
+			return new WorkflowPointGetHandler($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
 		});
 
 
 
 		// WorkflowSteps
 		
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler', function($app){
-			return new WorkflowStepCreateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler', function($app){
+			return new WorkflowStepCreateHandler($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler', function($app){
-			return new WorkflowStepUpdateHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler', function($app){
+			return new WorkflowStepUpdateHandler($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler', function($app){
-			return new WorkflowStepDeleteHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler', function($app){
+			return new WorkflowStepDeleteHandler($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler', function($app){
-			return new WorkflowStepFetchHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler', function($app){
+			return new WorkflowStepFetchHandler($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler', function($app){
-			return new WorkflowStepGetHandler($app->make('Cookbook\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind('Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler', function($app){
+			return new WorkflowStepGetHandler($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
 		});
 	}
 
@@ -216,25 +216,25 @@ class HandlersServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Workflows
-			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler',
-			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler',
-			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler',
-			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler',
-			'Cookbook\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler',
+			'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowCreateHandler',
+			'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowUpdateHandler',
+			'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowDeleteHandler',
+			'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowFetchHandler',
+			'Congraph\Workflows\Handlers\Commands\Workflows\WorkflowGetHandler',
 
 			// WorkflowPoints
-			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointCreateHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointUpdateHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointDeleteHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointFetchHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowPoints\WorkflowPointGetHandler',
 
 			// WorkflowSteps
-			'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler',
-			'Cookbook\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler'
+			'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepCreateHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepUpdateHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepDeleteHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepFetchHandler',
+			'Congraph\Workflows\Handlers\Commands\WorkflowSteps\WorkflowStepGetHandler'
 		];
 	}
 }

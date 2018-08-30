@@ -54,7 +54,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 			'driver'   	=> 'mysql',
 			'host'      => '127.0.0.1',
 			'port'		=> '3306',
-			'database'	=> 'cookbook_testbench',
+			'database'	=> 'congraph_testbench',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',
@@ -66,7 +66,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 	protected function getPackageProviders($app)
 	{
-		return ['Cookbook\Workflows\WorkflowsServiceProvider', 'Cookbook\Core\CoreServiceProvider'];
+		return ['Congraph\Workflows\WorkflowsServiceProvider', 'Congraph\Core\CoreServiceProvider'];
 	}
 
 	public function testCreateWorkflowPoint()
@@ -89,7 +89,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('archived', $result->status);
@@ -148,7 +148,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('archived', $result->status);
@@ -192,7 +192,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testCreateException()
 	{
@@ -210,7 +210,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
 		
 	}
 
@@ -226,9 +226,9 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 			'action' => 'delete'
 		];
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
 		
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
 		$this->assertEquals('deleted', $result->status);
@@ -259,9 +259,9 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 			]
 		];
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
 		
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
 		$this->assertEquals('deleted', $result->status);
@@ -271,7 +271,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 	}
 	
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testUpdateWorkflowPointWithStepToSelf()
 	{
@@ -299,11 +299,11 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 			]
 		];
 		
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testUpdateException()
 	{
@@ -316,7 +316,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 			'status' => 'published',
 		];
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
 	}
 
 	public function testDeleteWorkflowPoint()
@@ -326,7 +326,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand([], 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand([], 1));
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
@@ -334,7 +334,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\NotFoundException
+	 * @expectedException \Congraph\Core\Exceptions\NotFoundException
 	 */
 	public function testDeleteException()
 	{
@@ -343,7 +343,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand([], 133));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand([], 133));
 	}
 	
 	public function testFetchWorkflowPoint()
@@ -353,9 +353,9 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand([], 1));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand([], 1));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
 		$this->assertEquals('trashed', $result->status);
@@ -369,9 +369,9 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Cookbook\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand([]));
+		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand([]));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Collection);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
 		$this->assertEquals(3, count($result));
 		$this->d->dump($result->toArray());
 
