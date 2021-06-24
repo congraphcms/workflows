@@ -44,14 +44,13 @@ class WorkflowStepDeleteHandler extends RepositoryCommandHandler
 
 	/**
 	 * Handle RepositoryCommand
-	 * 
-	 * @param Congraph\Core\Bus\RepositoryCommand $command
+	 *
 	 * 
 	 * @return void
 	 */
-	public function handle(RepositoryCommand $command)
+	public function handle()
 	{
-		$workflowStep = $this->repository->delete($command->id);
+		$workflowStep = $this->repository->delete($this->id);
 
 		return $workflowStep->id;
 	}

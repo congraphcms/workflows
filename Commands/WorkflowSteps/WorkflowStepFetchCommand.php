@@ -10,6 +10,7 @@
 
 namespace Congraph\Workflows\Commands\WorkflowSteps;
 
+use Congraph\Contracts\Workflows\WorkflowStepRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -26,4 +27,31 @@ use Congraph\Core\Bus\RepositoryCommand;
 class WorkflowStepFetchCommand extends RepositoryCommand
 {
 
+    /**
+	 * Create new WorkflowStepFetchCommand
+	 * 
+	 * @param Congraph\Contracts\Workflows\WorkflowStepRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(WorkflowStepRepositoryContract $repository)
+	{
+		parent::__construct($repository);
+	}
+
+	/**
+	 * Handle RepositoryCommand
+	 *
+	 * 
+	 * @return void
+	 */
+	public function handle()
+	{
+		$workflowStep = $this->repository->fetch(
+			$this->id,
+			(!empty($this->params['include']))?$this->params['include']:[]
+		);
+
+		return $workflowStep;
+	}
 }

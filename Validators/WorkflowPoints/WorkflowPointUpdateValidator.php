@@ -68,13 +68,15 @@ class WorkflowPointUpdateValidator extends Validator
 			'public'				=> 'sometimes|boolean',
 			'deleted'				=> 'sometimes|boolean',
 			'sort_order'			=> 'sometimes|integer',
-			'steps'					=> 'sometimes|array'
+			'steps'					=> 'sometimes|array',
+			'steps.*.id'				=> 'required|exists:workflow_points,id',
+			'steps.*.type' 			=> 'in:workflow-point'
 		];
 
-		$this->stepRules = [
-			'id'		=> 'required|exists:workflow_points,id',
-			'type' 		=> 'in:workflow-point'
-		];
+		// $this->stepRules = [
+		// 	'id'		=> 'required|exists:workflow_points,id',
+		// 	'type' 		=> 'in:workflow-point'
+		// ];
 
 		parent::__construct();
 
@@ -97,10 +99,10 @@ class WorkflowPointUpdateValidator extends Validator
 		$workflowPoint = $this->workflowPointRepository->fetch($command->id);
 		$validator = $this->newValidator($command->params, $this->rules);
 
-		if( isset($command->params['steps']) )
-		{
-			$validator->each('steps', $this->stepRules);
-		}
+		// if( isset($command->params['steps']) )
+		// {
+		// 	$validator->each('steps', $this->stepRules);
+		// }
 		$this->setValidator($validator);
 
 		$this->validateParams($command->params, null, true);
@@ -109,7 +111,6 @@ class WorkflowPointUpdateValidator extends Validator
 		{
 			if( isset($command->params['steps']) )
 			{
-				$validator->each('steps', $this->stepRules);
 				foreach ($command->params['steps'] as $key => $step)
 				{
 					if($step['id'] == $command->id)

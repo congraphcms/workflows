@@ -82,9 +82,9 @@ class CreateWorkflowTables extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('workflows');
-		Schema::drop('workflow_points');
-		Schema::drop('workflow_steps');
+		Schema::dropIfExists('workflows');
+		Schema::dropIfExists('workflow_points');
+		Schema::dropIfExists('workflow_steps');
 	}
 
 }

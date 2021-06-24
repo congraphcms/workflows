@@ -389,6 +389,8 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		
 		$workflowPoints = $query->get();
 
+		$workflowPoints = $workflowPoints->toArray();
+
 		if( ! $workflowPoints )
 		{
 			$workflowPoints = [];

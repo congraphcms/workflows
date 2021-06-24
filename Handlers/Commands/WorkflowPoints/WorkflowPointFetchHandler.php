@@ -44,16 +44,15 @@ class WorkflowPointFetchHandler extends RepositoryCommandHandler
 
 	/**
 	 * Handle RepositoryCommand
-	 * 
-	 * @param Congraph\Core\Bus\RepositoryCommand $command
+	 *
 	 * 
 	 * @return void
 	 */
-	public function handle(RepositoryCommand $command)
+	public function handle()
 	{
 		$workflowPoint = $this->repository->fetch(
-			$command->id,
-			(!empty($command->params['include']))?$command->params['include']:[]
+			$this->id,
+			(!empty($this->params['include']))?$this->params['include']:[]
 		);
 
 		return $workflowPoint;

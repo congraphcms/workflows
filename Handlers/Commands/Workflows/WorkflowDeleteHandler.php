@@ -67,14 +67,13 @@ class WorkflowDeleteHandler extends RepositoryCommandHandler
 
 	/**
 	 * Handle RepositoryCommand
-	 * 
-	 * @param Congraph\Core\Bus\RepositoryCommand $command
+	 *
 	 * 
 	 * @return void
 	 */
-	public function handle(RepositoryCommand $command)
+	public function handle()
 	{
-		$workflow = $this->repository->delete($command->id);
+		$workflow = $this->repository->delete($this->id);
 		$this->workflowPointRepository->deleteByWorkflow($workflow->id);
 
 		return $workflow->id;

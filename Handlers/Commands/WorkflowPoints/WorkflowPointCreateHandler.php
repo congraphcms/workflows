@@ -44,14 +44,13 @@ class WorkflowPointCreateHandler extends RepositoryCommandHandler
 
 	/**
 	 * Handle RepositoryCommand
-	 * 
-	 * @param Congraph\Core\Bus\RepositoryCommand $command
+	 *
 	 * 
 	 * @return void
 	 */
-	public function handle(RepositoryCommand $command)
+	public function handle()
 	{
-		$workflowPoint = $this->repository->create($command->params);
+		$workflowPoint = $this->repository->create($this->params);
 
 		return $workflowPoint;
 	}

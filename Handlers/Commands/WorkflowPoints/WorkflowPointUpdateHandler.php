@@ -44,14 +44,13 @@ class WorkflowPointUpdateHandler extends RepositoryCommandHandler
 
 	/**
 	 * Handle RepositoryCommand
-	 * 
-	 * @param Congraph\Core\Bus\RepositoryCommand $command
+	 *
 	 * 
 	 * @return void
 	 */
-	public function handle(RepositoryCommand $command)
+	public function handle()
 	{
-		$workflowPoint = $this->repository->update($command->id, $command->params);
+		$workflowPoint = $this->repository->update($this->id, $this->params);
 
 		return $workflowPoint;
 	}

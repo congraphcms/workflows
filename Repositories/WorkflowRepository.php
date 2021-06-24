@@ -267,6 +267,8 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		
 		$workflows = $query->get();
 
+		$workflows = $workflows->toArray();
+
 		if( ! $workflows )
 		{
 			$workflows = [];

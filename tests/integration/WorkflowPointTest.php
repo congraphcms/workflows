@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Debug\Dumper;
+use Symfony\Component\VarDumper\VarDumper as Dumper;
 
 require_once(__DIR__ . '/../database/seeders/WorkflowTestDbSeeder.php');
 require_once(__DIR__ . '/../database/seeders/WorkflowPointTestDbSeeder.php');
@@ -10,44 +10,23 @@ require_once(__DIR__ . '/../database/seeders/ClearDB.php');
 class WorkflowPointTest extends Orchestra\Testbench\TestCase
 {
 
-	public function setUp()
+	// ----------------------------------------
+    // ENVIRONMENT
+    // ----------------------------------------
+
+    protected function getPackageProviders($app)
 	{
-		parent::setUp();
-
-		$this->artisan('migrate', [
-			'--database' => 'testbench',
-			'--realpath' => realpath(__DIR__.'/../database/migrations'),
-		]);
-
-		$this->artisan('db:seed', [
-			'--class' => 'WorkflowTestDbSeeder'
-		]);
-
-		$this->artisan('db:seed', [
-			'--class' => 'WorkflowPointTestDbSeeder'
-		]);
-
-		$this->d = new Dumper();
-
-
+		return ['Congraph\Workflows\WorkflowsServiceProvider', 'Congraph\Core\CoreServiceProvider'];
 	}
 
-	public function tearDown()
-	{
-		$this->artisan('db:seed', [
-			'--class' => 'ClearDB'
-		]);
-		parent::tearDown();
-	}
-
-	/**
+    /**
 	 * Define environment setup.
 	 *
 	 * @param  \Illuminate\Foundation\Application  $app
 	 *
 	 * @return void
 	 */
-	protected function getEnvironmentSetUp($app)
+	protected function defineEnvironment($app)
 	{
 		$app['config']->set('database.default', 'testbench');
 		$app['config']->set('database.connections.testbench', [
@@ -64,10 +43,55 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 	}
 
-	protected function getPackageProviders($app)
-	{
-		return ['Congraph\Workflows\WorkflowsServiceProvider', 'Congraph\Core\CoreServiceProvider'];
+    // ----------------------------------------
+    // DATABASE
+    // ----------------------------------------
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(realpath(__DIR__.'/../database/migrations'));
+
+        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+
+        $this->beforeApplicationDestroyed(function () {
+            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
+        });
+    }
+
+
+    // ----------------------------------------
+    // SETUP
+    // ----------------------------------------
+
+    public function setUp(): void {
+		parent::setUp();
+
+		$this->d = new Dumper();
+
+        $this->artisan('db:seed', [
+			'--class' => 'WorkflowTestDbSeeder'
+		]);
+
+		$this->artisan('db:seed', [
+			'--class' => 'WorkflowPointTestDbSeeder'
+		]);
 	}
+
+	public function tearDown(): void {
+		$this->artisan('db:seed', [
+			'--class' => 'ClearDB'
+		]);
+		parent::tearDown();
+	}
+
+    // ----------------------------------------
+    // TESTS **********************************
+    // ----------------------------------------
 
 	public function testCreateWorkflowPoint()
 	{
@@ -87,9 +111,15 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand::class);
+		$command->setParams($params);
+		try {
+			$result = $bus->dispatch($command);
+		} catch (\Congraph\Core\Exceptions\ValidationException $e) {
+			$this->d->dump($e->getErrors());
+		}
+			
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('archived', $result->status);
@@ -101,7 +131,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$this->assertEquals(0, $result->deleted);
 		$this->assertEquals(4, $result->sort_order);
 		
-		$this->seeInDatabase('workflow_points', [
+		$this->assertDatabaseHas('workflow_points', [
 			'id' => 4, 
 			'status' => 'archived',
 			'endpoint' => 'archive',
@@ -146,9 +176,11 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand::class);
+		$command->setParams($params);
+
+		$result = $bus->dispatch($command);
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('archived', $result->status);
@@ -161,7 +193,7 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$this->assertEquals(4, $result->sort_order);
 		$this->assertEquals(3, count($result->steps));
 		
-		$this->seeInDatabase('workflow_points', [
+		$this->assertDatabaseHas('workflow_points', [
 			'id' => 4, 
 			'status' => 'archived',
 			'endpoint' => 'archive',
@@ -173,17 +205,17 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 			'sort_order' => 4
 		]);
 
-		$this->seeInDatabase('workflow_steps', [
+		$this->assertDatabaseHas('workflow_steps', [
 			'workflow_id' => 1, 
 			'from_id' => 4,
 			'to_id' => 1
 		]);
-		$this->seeInDatabase('workflow_steps', [
+		$this->assertDatabaseHas('workflow_steps', [
 			'workflow_id' => 1, 
 			'from_id' => 4,
 			'to_id' => 2
 		]);
-		$this->seeInDatabase('workflow_steps', [
+		$this->assertDatabaseHas('workflow_steps', [
 			'workflow_id' => 1, 
 			'from_id' => 4,
 			'to_id' => 3
@@ -191,12 +223,12 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
+	
 	public function testCreateException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
 
 		$params = [
 			'status' => '',
@@ -208,9 +240,11 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand($params));
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand::class);
+		$command->setParams($params);
+
+		$result = $bus->dispatch($command);
 		
 	}
 
@@ -218,15 +252,18 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-
 		$params = [
 			'status' => 'deleted',
 			'action' => 'delete'
 		];
-		
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+
+		$app = $this->createApplication();
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
+
+		$result = $bus->dispatch($command);
 		
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -240,9 +277,6 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 	public function testUpdateWorkflowPointWithSteps()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
 		$params = [
 			'status' => 'deleted',
@@ -258,8 +292,14 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 				]
 			]
 		];
-		
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+
+		$app = $this->createApplication();
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
+
+		$result = $bus->dispatch($command);
 		
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -270,15 +310,12 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		$this->d->dump($result->toArray());
 	}
 	
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
+	
 	public function testUpdateWorkflowPointWithStepToSelf()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
 
 		$params = [
 			'status' => 'deleted',
@@ -298,25 +335,34 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 				]
 			]
 		];
-		
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+
+		$app = $this->createApplication();
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
+
+		$result = $bus->dispatch($command);
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
+	
 	public function testUpdateException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
 
 		$params = [
 			'status' => 'published',
 		];
+		
+		$app = $this->createApplication();
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
 
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand($params, 1));
+		$result = $bus->dispatch($command);
 	}
 
 	public function testDeleteWorkflowPoint()
@@ -324,26 +370,30 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand::class);
+		$command->setId(1);
 
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand([], 1));
+		$result = $bus->dispatch($command);
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
 
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\NotFoundException
-	 */
+	
 	public function testDeleteException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$this->expectException(\Congraph\Core\Exceptions\NotFoundException::class);
 
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand([], 133));
+		$app = $this->createApplication();
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand::class);
+		$command->setId(133);
+
+		$result = $bus->dispatch($command);
 	}
 	
 	public function testFetchWorkflowPoint()
@@ -351,9 +401,11 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand::class);
+		$command->setId(1);
 
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand([], 1));
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -368,8 +420,10 @@ class WorkflowPointTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand([]));
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand::class);
+
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
 		$this->assertEquals(3, count($result));

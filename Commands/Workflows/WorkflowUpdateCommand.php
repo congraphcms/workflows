@@ -10,6 +10,7 @@
 
 namespace Congraph\Workflows\Commands\Workflows;
 
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -25,5 +26,27 @@ use Congraph\Core\Bus\RepositoryCommand;
  */
 class WorkflowUpdateCommand extends RepositoryCommand
 {
+    /**
+	 * Create new WorkflowUpdateCommand
+	 * 
+	 * @param Congraph\Contracts\Workflows\WorkflowRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(WorkflowRepositoryContract $repository)
+	{
+		parent::__construct($repository);
+	}
 
+	/**
+	 * Handle RepositoryCommand
+	 * 
+	 * @return void
+	 */
+	public function handle()
+	{
+		$workflow = $this->repository->update($this->id, $this->params);
+
+		return $workflow;
+	}
 }

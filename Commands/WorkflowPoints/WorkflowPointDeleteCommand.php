@@ -10,6 +10,8 @@
 
 namespace Congraph\Workflows\Commands\WorkflowPoints;
 
+use Congraph\Contracts\Workflows\WorkflowPointRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowStepRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -26,4 +28,38 @@ use Congraph\Core\Bus\RepositoryCommand;
 class WorkflowPointDeleteCommand extends RepositoryCommand
 {
 
+    /**
+	 * Repository for workflow steps
+	 * 
+	 * @var \Congraph\Contracts\Workflows\WorkflowStepRepositoryContract
+	 */
+	protected $workflowStepRepository;
+
+	/**
+	 * Create new WorkflowPointDeleteCommand
+	 * 
+	 * @param Congraph\Contracts\Workflows\WorkflowPointRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(
+		WorkflowPointRepositoryContract $repository,
+		WorkflowStepRepositoryContract $workflowStepRepository
+	)
+	{
+		$this->workflowStepRepository = $workflowStepRepository;
+		parent::__construct($repository);
+	}
+
+	/**
+	 * Handle RepositoryCommand
+	 * 
+	 * @return void
+	 */
+	public function handle()
+	{
+		$workflowPoint = $this->repository->delete($this->id);
+
+		return $workflowPoint->id;
+	}
 }
