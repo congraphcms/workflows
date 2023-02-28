@@ -58,18 +58,14 @@ class WorkflowsServiceProvider extends ServiceProvider {
 		// Repositories
 		// -----------------------------------------------------------------------------
 		$this->app->register('Congraph\Workflows\Repositories\RepositoriesServiceProvider');
-		
-		// Handlers
-		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Workflows\Handlers\HandlersServiceProvider');
-
-		// Validators
-		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Workflows\Validators\ValidatorsServiceProvider');
 
 		// Commands
 		// -----------------------------------------------------------------------------
 		$this->app->register('Congraph\Workflows\Commands\CommandsServiceProvider');
+
+		// Validators
+		// -----------------------------------------------------------------------------
+		$this->app->register('Congraph\Workflows\Validators\ValidatorsServiceProvider');
 
 	}
 

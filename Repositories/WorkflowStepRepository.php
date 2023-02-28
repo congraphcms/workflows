@@ -291,6 +291,8 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		
 		$workflowSteps = $query->get();
 
+		$workflowSteps = $workflowSteps->toArray();
+
 		if( ! $workflowSteps )
 		{
 			$workflowSteps = [];

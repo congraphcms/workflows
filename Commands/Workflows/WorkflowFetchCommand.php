@@ -10,6 +10,7 @@
 
 namespace Congraph\Workflows\Commands\Workflows;
 
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -26,4 +27,30 @@ use Congraph\Core\Bus\RepositoryCommand;
 class WorkflowFetchCommand extends RepositoryCommand
 {
 
+    /**
+	 * Create new WorkflowFetchHandler
+	 * 
+	 * @param Congraph\Contracts\Workflows\WorkflowRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(WorkflowRepositoryContract $repository)
+	{
+		parent::__construct($repository);
+	}
+
+	/**
+	 * Handle RepositoryCommand
+	 * 
+	 * @return void
+	 */
+	public function handle()
+	{
+		$workflow = $this->repository->fetch(
+			$this->id,
+			(!empty($this->params['include']))?$this->params['include']:[]
+		);
+
+		return $workflow;
+	}
 }

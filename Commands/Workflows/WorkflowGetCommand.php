@@ -10,6 +10,7 @@
 
 namespace Congraph\Workflows\Commands\Workflows;
 
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -26,4 +27,33 @@ use Congraph\Core\Bus\RepositoryCommand;
 class WorkflowGetCommand extends RepositoryCommand
 {
 
+    /**
+	 * Create new WorkflowGetCommand
+	 * 
+	 * @param Congraph\Contracts\Workflows\WorkflowRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(WorkflowRepositoryContract $repository)
+	{
+		parent::__construct($repository);
+	}
+
+	/**
+	 * Handle RepositoryCommand
+	 * 
+	 * @return void
+	 */
+	public function handle()
+	{
+		$workflows = $this->repository->get(
+			(!empty($this->params['filter']))?$this->params['filter']:[],
+			(!empty($this->params['offset']))?$this->params['offset']:0,
+			(!empty($this->params['limit']))?$this->params['limit']:0,
+			(!empty($this->params['sort']))?$this->params['sort']:[],
+			(!empty($this->params['include']))?$this->params['include']:[]
+		);
+
+		return $workflows;
+	}
 }
