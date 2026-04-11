@@ -10,6 +10,9 @@
 
 namespace Congraph\Workflows;
 
+use Congraph\Workflows\Commands\CommandsServiceProvider;
+use Congraph\Workflows\Repositories\RepositoriesServiceProvider;
+use Congraph\Workflows\Validators\ValidatorsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -57,15 +60,15 @@ class WorkflowsServiceProvider extends ServiceProvider {
 
 		// Repositories
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Workflows\Repositories\RepositoriesServiceProvider');
+		$this->app->register(RepositoriesServiceProvider::class);
 
 		// Commands
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Workflows\Commands\CommandsServiceProvider');
+		$this->app->register(CommandsServiceProvider::class);
 
 		// Validators
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Workflows\Validators\ValidatorsServiceProvider');
+		$this->app->register(ValidatorsServiceProvider::class);
 
 	}
 

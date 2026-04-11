@@ -31,21 +31,52 @@ class WorkflowTestDbSeeder extends Seeder {
 
 	public function run()
 	{
-		DB::table('workflows')->truncate();
+		DB::table('workflows')->delete();
 		DB::table('workflows')->insert([
 			[
+				'id' => 1,
 				'name' => 'Basic Publishing',
 				'description' => 'Testing workflows',
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
+				'id' => 2,
 				'name' => 'Compicated Editing & Publishing',
 				'description' => 'Testing workflows number 2',
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			]
 		]);
+
+		$this->syncSequence('workflows', 3);
 	}
 
+	private function syncSequence(string $table, int $nextId): void
+	{
+		$driver = DB::getDriverName();
+
+		if ($driver === 'pgsql') {
+			DB::statement(
+				"SELECT setval(pg_get_serial_sequence('{$table}', 'id'), ?, false)",
+				[$nextId]
+			);
+			return;
+		}
+
+		if ($driver === 'sqlite') {
+			try {
+				DB::table('sqlite_sequence')->updateOrInsert(
+					['name' => $table],
+					['seq' => $nextId - 1]
+				);
+			} catch (\Throwable $e) {
+			}
+			return;
+		}
+
+		if ($driver === 'mysql') {
+			DB::statement("ALTER TABLE {$table} AUTO_INCREMENT = {$nextId}");
+		}
+	}
 }

@@ -11,9 +11,8 @@
 namespace Congraph\Workflows\Validators\Workflows;
 
 use Congraph\Core\Bus\RepositoryCommand;
+use Congraph\Core\Exceptions\BadRequestException;
 use Congraph\Core\Validation\Validator;
-
-use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
 
 
 /**

@@ -1,273 +1,149 @@
 <?php
 
-use Illuminate\Support\Facades\Cache;
-use Symfony\Component\VarDumper\VarDumper as Dumper;
+require_once __DIR__ . '/../Fixtures/DatabaseTestCase.php';
 
-require_once(__DIR__ . '/../database/seeders/WorkflowTestDbSeeder.php');
-require_once(__DIR__ . '/../database/seeders/WorkflowPointTestDbSeeder.php');
-require_once(__DIR__ . '/../database/seeders/WorkflowStepTestDbSeeder.php');
-require_once(__DIR__ . '/../database/seeders/ClearDB.php');
+use Congraph\Core\Exceptions\NotFoundException;
+use Congraph\Core\Exceptions\ValidationException;
+use Congraph\Core\Repositories\Collection;
+use Congraph\Core\Repositories\Model;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand;
 
-class WorkflowStepTest extends Orchestra\Testbench\TestCase
+final class WorkflowStepTest extends DatabaseTestCase
 {
-	// ----------------------------------------
-    // ENVIRONMENT
-    // ----------------------------------------
-
-    protected function getPackageProviders($app)
+	protected function seeders(): array
 	{
-		return ['Congraph\Workflows\WorkflowsServiceProvider', 'Congraph\Core\CoreServiceProvider'];
-	}
-
-    /**
-	 * Define environment setup.
-	 *
-	 * @param  \Illuminate\Foundation\Application  $app
-	 *
-	 * @return void
-	 */
-	protected function defineEnvironment($app)
-	{
-		$app['config']->set('database.default', 'testbench');
-		$app['config']->set('database.connections.testbench', [
-			'driver'   	=> 'mysql',
-			'host'      => '127.0.0.1',
-			'port'		=> '3306',
-			'database'	=> 'congraph_testbench',
-			'username'  => 'root',
-			'password'  => '',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
-		]);
-
-	}
-
-    // ----------------------------------------
-    // DATABASE
-    // ----------------------------------------
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(realpath(__DIR__.'/../database/migrations'));
-
-        $this->artisan('migrate', ['--database' => 'testbench'])->run();
-
-        $this->beforeApplicationDestroyed(function () {
-            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
-        });
-    }
-
-
-    // ----------------------------------------
-    // SETUP
-    // ----------------------------------------
-
-    public function setUp(): void {
-		parent::setUp();
-
-		$this->d = new Dumper();
-
-        $this->artisan('db:seed', [
-			'--class' => 'WorkflowTestDbSeeder'
-		]);
-
-		$this->artisan('db:seed', [
-			'--class' => 'WorkflowPointTestDbSeeder'
-		]);
-
-		$this->artisan('db:seed', [
-			'--class' => 'WorkflowStepTestDbSeeder'
-		]);
-	}
-
-	public function tearDown(): void {
-		$this->artisan('db:seed', [
-			'--class' => 'ClearDB'
-		]);
-		parent::tearDown();
-	}
-
-    // ----------------------------------------
-    // TESTS **********************************
-    // ----------------------------------------
-
-	public function testCreateWorkflowStep()
-	{
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$params = [
-			'workflow_id' => 1,
-			'from_id' => 3,
-			'to_id' => 1
+		return [
+			Database\Seeders\WorkflowTestDbSeeder::class,
+			Database\Seeders\WorkflowPointTestDbSeeder::class,
+			Database\Seeders\WorkflowStepTestDbSeeder::class,
 		];
+	}
 
+	protected function cleanupSeeders(): array
+	{
+		return [
+			Database\Seeders\ClearDB::class,
+		];
+	}
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand::class);
-		$command->setParams($params);
-
-		$result = $bus->dispatch($command);
-		
-		$this->d->dump($result->toArray());
-		$this->assertEquals(1, $result->workflow_id);
-		$this->assertEquals(1, $result->workflow->id);
-		$this->assertEquals(3, $result->from_id);
-		$this->assertEquals(3, $result->from->id);
-		$this->assertEquals(1, $result->to_id);
-		$this->assertEquals(1, $result->to->id);
-		
-		$this->assertDatabaseHas('workflow_steps', [
-			'id' => 5, 
+	public function testCreateWorkflowStep(): void
+	{
+		$command = $this->app->make(WorkflowStepCreateCommand::class);
+		$command->setParams([
 			'workflow_id' => 1,
 			'from_id' => 3,
-			'to_id' => 1
+			'to_id' => 1,
+		]);
+
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame(1, $result->workflow_id);
+		$this->assertSame(1, $result->workflow->id);
+		$this->assertSame(3, $result->from_id);
+		$this->assertSame(3, $result->from->id);
+		$this->assertSame(1, $result->to_id);
+		$this->assertSame(1, $result->to->id);
+
+		$this->assertDatabaseHas('workflow_steps', [
+			'id' => 5,
+			'workflow_id' => 1,
+			'from_id' => 3,
+			'to_id' => 1,
 		]);
 	}
-	
 
-	public function testCreateException()
+	public function testCreateWorkflowStepThrowsValidationException(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$this->expectException(ValidationException::class);
 
-		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
-
-		$params = [ 
+		$command = $this->app->make(WorkflowStepCreateCommand::class);
+		$command->setParams([
 			'workflow_id' => 5,
 			'from_id' => 3,
-			'to_id' => 1
-		];
+			'to_id' => 1,
+		]);
 
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand::class);
-		$command->setParams($params);
-
-		$result = $bus->dispatch($command);
-		
+		$this->dispatch($command);
 	}
 
-	public function testUpdateWorkflowStep()
+	public function testUpdateWorkflowStep(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$params = [
-			'to_id' => 3
-		];
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand::class);
-		$command->setParams($params);
+		$command = $this->app->make(WorkflowStepUpdateCommand::class);
 		$command->setId(1);
+		$command->setParams([
+			'to_id' => 3,
+		]);
 
-		$result = $bus->dispatch($command);
-		
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
-		$this->assertTrue(is_int($result->id));
-		$this->assertEquals(1, $result->id);
-		$this->assertEquals(3, $result->to_id);
-		$this->assertEquals(1, $result->from_id);
-		
-		$this->d->dump($result->toArray());
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame(1, $result->id);
+		$this->assertSame(3, $result->to_id);
+		$this->assertSame(1, $result->from_id);
 	}
 
-
-	public function testUpdateException()
+	public function testUpdateWorkflowStepThrowsValidationException(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$this->expectException(ValidationException::class);
 
-		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
-
-		$params = [
+		$command = $this->app->make(WorkflowStepUpdateCommand::class);
+		$command->setId(1);
+		$command->setParams([
 			'from_id' => 3,
-		];
+		]);
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand::class);
-		$command->setParams($params);
-		$command->setId(1);
-
-		$result = $bus->dispatch($command);
+		$this->dispatch($command);
 	}
 
-	public function testDeleteWorkflowStep()
+	public function testDeleteWorkflowStep(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand::class);
+		$command = $this->app->make(WorkflowStepDeleteCommand::class);
 		$command->setId(1);
 
-		$result = $bus->dispatch($command);
+		$result = $this->dispatch($command);
 
-		$this->assertEquals(1, $result);
-		$this->d->dump($result);
-
+		$this->assertSame(1, $result);
 	}
 
-	
-	public function testDeleteException()
+	public function testDeleteWorkflowStepThrowsWhenMissing(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$this->expectException(NotFoundException::class);
 
-		$this->expectException(\Congraph\Core\Exceptions\NotFoundException::class);
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand::class);
+		$command = $this->app->make(WorkflowStepDeleteCommand::class);
 		$command->setId(133);
 
-		$result = $bus->dispatch($command);
+		$this->dispatch($command);
 	}
-	
-	public function testFetchWorkflowStep()
-	{
-		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand::class);
+	public function testFetchWorkflowStep(): void
+	{
+		$command = $this->app->make(WorkflowStepFetchCommand::class);
 		$command->setId(1);
 
-		$result = $bus->dispatch($command);
+		$result = $this->dispatch($command);
 
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
-		$this->assertTrue(is_int($result->id));
-		$this->assertEquals(1, $result->id);
-		$this->assertEquals(1, $result->workflow_id);
-		$this->assertEquals(1, $result->workflow->id);
-		$this->assertEquals(1, $result->from_id);
-		$this->assertEquals(1, $result->from->id);
-		$this->assertEquals(2, $result->to_id);
-		$this->assertEquals(2, $result->to->id);
-		$this->d->dump($result->toArray());
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame(1, $result->id);
+		$this->assertSame(1, $result->workflow_id);
+		$this->assertSame(1, $result->workflow->id);
+		$this->assertSame(1, $result->from_id);
+		$this->assertSame(1, $result->from->id);
+		$this->assertSame(2, $result->to_id);
+		$this->assertSame(2, $result->to->id);
 	}
 
-	
-	public function testGetWorkflowSteps()
+	public function testGetWorkflowSteps(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$command = $this->app->make(WorkflowStepGetCommand::class);
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand::class);
+		$result = $this->dispatch($command);
 
-		$result = $bus->dispatch($command);
-
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
-		$this->assertEquals(4, count($result));
-		$this->d->dump($result->toArray());
-
+		$this->assertInstanceOf(Collection::class, $result);
+		$this->assertCount(4, $result);
 	}
-
 }

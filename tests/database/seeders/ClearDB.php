@@ -31,9 +31,9 @@ class ClearDB extends Seeder {
 
 	public function run()
 	{
-		DB::table('workflows')->truncate();
-		DB::table('workflow_points')->truncate();
-		DB::table('workflow_steps')->truncate();
+		DB::table('workflow_steps')->delete();
+		DB::table('workflow_points')->delete();
+		DB::table('workflows')->delete();
 	
 	}
 

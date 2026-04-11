@@ -10,6 +10,10 @@
 
 namespace Congraph\Workflows\Commands;
 
+use Congraph\Contracts\Workflows\WorkflowPointRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowStepRepositoryContract;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
 use Congraph\Workflows\Commands\Workflows\WorkflowCreateCommand;
@@ -43,14 +47,7 @@ use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class CommandsServiceProvider extends ServiceProvider {
-
-	/**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-	protected $defer = true;
+class CommandsServiceProvider extends ServiceProvider implements DeferrableProvider {
 
 
 	/**
@@ -70,77 +67,77 @@ class CommandsServiceProvider extends ServiceProvider {
 	public function registerCommands() {
 		// Workflows
 		
-		$this->app->bind('Congraph\Workflows\Commands\Workflows\WorkflowCreateCommand', function($app){
-			return new WorkflowCreateCommand($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind(WorkflowCreateCommand::class, function($app){
+			return new WorkflowCreateCommand($app->make(WorkflowRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\Workflows\WorkflowUpdateCommand', function($app){
-			return new WorkflowUpdateCommand($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind(WorkflowUpdateCommand::class, function($app){
+			return new WorkflowUpdateCommand($app->make(WorkflowRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\Workflows\WorkflowDeleteCommand', function($app){
+		$this->app->bind(WorkflowDeleteCommand::class, function($app){
 			return new WorkflowDeleteCommand(
-				$app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'),
-				$app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'),
-				$app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract')
+				$app->make(WorkflowRepositoryContract::class),
+				$app->make(WorkflowPointRepositoryContract::class),
+				$app->make(WorkflowStepRepositoryContract::class)
 			);
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\Workflows\WorkflowFetchCommand', function($app){
-			return new WorkflowFetchCommand($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind(WorkflowFetchCommand::class, function($app){
+			return new WorkflowFetchCommand($app->make(WorkflowRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\Workflows\WorkflowGetCommand', function($app){
-			return new WorkflowGetCommand($app->make('Congraph\Contracts\Workflows\WorkflowRepositoryContract'));
+		$this->app->bind(WorkflowGetCommand::class, function($app){
+			return new WorkflowGetCommand($app->make(WorkflowRepositoryContract::class));
 		});
 
 		// WorkflowPoints
 		
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand', function($app){
-			return new WorkflowPointCreateCommand($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind(WorkflowPointCreateCommand::class, function($app){
+			return new WorkflowPointCreateCommand($app->make(WorkflowPointRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand', function($app){
-			return new WorkflowPointUpdateCommand($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind(WorkflowPointUpdateCommand::class, function($app){
+			return new WorkflowPointUpdateCommand($app->make(WorkflowPointRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand', function($app){
+		$this->app->bind(WorkflowPointDeleteCommand::class, function($app){
 			return new WorkflowPointDeleteCommand(
-				$app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'),
-				$app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract')
+				$app->make(WorkflowPointRepositoryContract::class),
+				$app->make(WorkflowStepRepositoryContract::class)
 			);
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand', function($app){
-			return new WorkflowPointFetchCommand($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind(WorkflowPointFetchCommand::class, function($app){
+			return new WorkflowPointFetchCommand($app->make(WorkflowPointRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand', function($app){
-			return new WorkflowPointGetCommand($app->make('Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'));
+		$this->app->bind(WorkflowPointGetCommand::class, function($app){
+			return new WorkflowPointGetCommand($app->make(WorkflowPointRepositoryContract::class));
 		});
 
 
 
 		// WorkflowSteps
 		
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand', function($app){
-			return new WorkflowStepCreateCommand($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind(WorkflowStepCreateCommand::class, function($app){
+			return new WorkflowStepCreateCommand($app->make(WorkflowStepRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand', function($app){
-			return new WorkflowStepUpdateCommand($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind(WorkflowStepUpdateCommand::class, function($app){
+			return new WorkflowStepUpdateCommand($app->make(WorkflowStepRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand', function($app){
-			return new WorkflowStepDeleteCommand($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind(WorkflowStepDeleteCommand::class, function($app){
+			return new WorkflowStepDeleteCommand($app->make(WorkflowStepRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand', function($app){
-			return new WorkflowStepFetchCommand($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind(WorkflowStepFetchCommand::class, function($app){
+			return new WorkflowStepFetchCommand($app->make(WorkflowStepRepositoryContract::class));
 		});
 
-		$this->app->bind('Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand', function($app){
-			return new WorkflowStepGetCommand($app->make('Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'));
+		$this->app->bind(WorkflowStepGetCommand::class, function($app){
+			return new WorkflowStepGetCommand($app->make(WorkflowStepRepositoryContract::class));
 		});
 	}
 
@@ -153,25 +150,25 @@ class CommandsServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Workflows
-			'Congraph\Workflows\Commands\Workflows\WorkflowCreateCommand',
-			'Congraph\Workflows\Commands\Workflows\WorkflowUpdateCommand',
-			'Congraph\Workflows\Commands\Workflows\WorkflowDeleteCommand',
-			'Congraph\Workflows\Commands\Workflows\WorkflowFetchCommand',
-			'Congraph\Workflows\Commands\Workflows\WorkflowGetCommand',
+			WorkflowCreateCommand::class,
+			WorkflowUpdateCommand::class,
+			WorkflowDeleteCommand::class,
+			WorkflowFetchCommand::class,
+			WorkflowGetCommand::class,
 
 			// WorkflowPoints
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand',
+			WorkflowPointCreateCommand::class,
+			WorkflowPointUpdateCommand::class,
+			WorkflowPointDeleteCommand::class,
+			WorkflowPointFetchCommand::class,
+			WorkflowPointGetCommand::class,
 
 			// WorkflowSteps
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand'
+			WorkflowStepCreateCommand::class,
+			WorkflowStepUpdateCommand::class,
+			WorkflowStepDeleteCommand::class,
+			WorkflowStepFetchCommand::class,
+			WorkflowStepGetCommand::class,
 		];
 	}
 }

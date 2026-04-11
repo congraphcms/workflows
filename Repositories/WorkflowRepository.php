@@ -181,7 +181,7 @@ class WorkflowRepository extends AbstractRepository implements WorkflowRepositor
 		
 		if(Trunk::has($params, 'workflow'))
 		{
-			$workflow = Trunk::get($id, 'workflow');
+			$workflow = Trunk::get($params, 'workflow');
 			$workflow->clearIncluded();
 			$workflow->load($include);
 			$meta = ['id' => $id, 'include' => $include];

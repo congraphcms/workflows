@@ -10,6 +10,24 @@
 
 namespace Congraph\Workflows\Validators;
 
+use Congraph\Contracts\Workflows\WorkflowPointRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowStepRepositoryContract;
+use Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand;
+use Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand;
+use Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand;
+use Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand;
+use Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand;
+use Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand;
+use Congraph\Workflows\Commands\Workflows\WorkflowCreateCommand;
+use Congraph\Workflows\Commands\Workflows\WorkflowDeleteCommand;
+use Congraph\Workflows\Commands\Workflows\WorkflowFetchCommand;
+use Congraph\Workflows\Commands\Workflows\WorkflowGetCommand;
+use Congraph\Workflows\Commands\Workflows\WorkflowUpdateCommand;
 use Illuminate\Support\ServiceProvider;
 
 use Congraph\Workflows\Validators\Workflows\WorkflowCreateValidator;
@@ -29,6 +47,7 @@ use Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepUpdateValidator;
 use Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepDeleteValidator;
 use Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepFetchValidator;
 use Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepGetValidator;
+use Illuminate\Contracts\Bus\Dispatcher;
 
 /**
  * ValidatorsServiceProvider service provider for validators
@@ -73,43 +92,28 @@ class ValidatorsServiceProvider extends ServiceProvider {
 		
 		$mappings = [
 			// Workflows
-			'Congraph\Workflows\Commands\Workflows\WorkflowCreateCommand' => 
-				'Congraph\Workflows\Validators\Workflows\WorkflowCreateValidator@validate',
-			'Congraph\Workflows\Commands\Workflows\WorkflowUpdateCommand' => 
-				'Congraph\Workflows\Validators\Workflows\WorkflowUpdateValidator@validate',
-			'Congraph\Workflows\Commands\Workflows\WorkflowDeleteCommand' => 
-				'Congraph\Workflows\Validators\Workflows\WorkflowDeleteValidator@validate',
-			'Congraph\Workflows\Commands\Workflows\WorkflowFetchCommand' => 
-				'Congraph\Workflows\Validators\Workflows\WorkflowFetchValidator@validate',
-			'Congraph\Workflows\Commands\Workflows\WorkflowGetCommand' => 
-				'Congraph\Workflows\Validators\Workflows\WorkflowGetValidator@validate',
+			WorkflowCreateCommand::class => WorkflowCreateValidator::class . '@validate',
+			WorkflowUpdateCommand::class => WorkflowUpdateValidator::class . '@validate',
+			WorkflowDeleteCommand::class => WorkflowDeleteValidator::class . '@validate',
+			WorkflowFetchCommand::class => WorkflowFetchValidator::class . '@validate',
+			WorkflowGetCommand::class => WorkflowGetValidator::class . '@validate',
 
 			// WorkflowPoints
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointCreateCommand' => 
-				'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointCreateValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointUpdateCommand' => 
-				'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointUpdateValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointDeleteCommand' => 
-				'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointDeleteValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointFetchCommand' => 
-				'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointFetchValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowPoints\WorkflowPointGetCommand' => 
-				'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointGetValidator@validate',
+			WorkflowPointCreateCommand::class => WorkflowPointCreateValidator::class . '@validate',
+			WorkflowPointUpdateCommand::class => WorkflowPointUpdateValidator::class . '@validate',
+			WorkflowPointDeleteCommand::class => WorkflowPointDeleteValidator::class . '@validate',
+			WorkflowPointFetchCommand::class => WorkflowPointFetchValidator::class . '@validate',
+			WorkflowPointGetCommand::class => WorkflowPointGetValidator::class . '@validate',
 
 			// WorkflowSteps
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepCreateCommand' => 
-				'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepCreateValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepUpdateCommand' => 
-				'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepUpdateValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepDeleteCommand' => 
-				'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepDeleteValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepFetchCommand' => 
-				'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepFetchValidator@validate',
-			'Congraph\Workflows\Commands\WorkflowSteps\WorkflowStepGetCommand' => 
-				'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepGetValidator@validate',
+			WorkflowStepCreateCommand::class => WorkflowStepCreateValidator::class . '@validate',
+			WorkflowStepUpdateCommand::class => WorkflowStepUpdateValidator::class . '@validate',
+			WorkflowStepDeleteCommand::class => WorkflowStepDeleteValidator::class . '@validate',
+			WorkflowStepFetchCommand::class => WorkflowStepFetchValidator::class . '@validate',
+			WorkflowStepGetCommand::class => WorkflowStepGetValidator::class . '@validate',
 		];
 
-		$this->app->make('Illuminate\Contracts\Bus\Dispatcher')->mapValidators($mappings);
+		$this->app->make(Dispatcher::class)->mapValidators($mappings);
 	}
 
 	/**
@@ -120,73 +124,73 @@ class ValidatorsServiceProvider extends ServiceProvider {
 	public function registerValidators() {
 
 		// Workflows
-		$this->app->bind('Congraph\Workflows\Validators\Workflows\WorkflowCreateValidator', function($app){
+		$this->app->bind(WorkflowCreateValidator::class, function($app){
 			return new WorkflowCreateValidator();
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\Workflows\WorkflowUpdateValidator', function($app){
-			return new WorkflowUpdateValidator($app['Congraph\Contracts\Workflows\WorkflowRepositoryContract']);
+		$this->app->bind(WorkflowUpdateValidator::class, function($app){
+			return new WorkflowUpdateValidator($app[WorkflowRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\Workflows\WorkflowDeleteValidator', function($app){
-			return new WorkflowDeleteValidator($app['Congraph\Contracts\Workflows\WorkflowRepositoryContract']);
+		$this->app->bind(WorkflowDeleteValidator::class, function($app){
+			return new WorkflowDeleteValidator($app[WorkflowRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\Workflows\WorkflowFetchValidator', function($app){
-			return new WorkflowFetchValidator($app['Congraph\Contracts\Workflows\WorkflowRepositoryContract']);
+		$this->app->bind(WorkflowFetchValidator::class, function($app){
+			return new WorkflowFetchValidator($app[WorkflowRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\Workflows\WorkflowGetValidator', function($app){
+		$this->app->bind(WorkflowGetValidator::class, function($app){
 			return new WorkflowGetValidator();
 		});
 
 
 		// WorkflowPoints
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointCreateValidator', function($app){
-			return new WorkflowPointCreateValidator($app['Congraph\Contracts\Workflows\WorkflowPointRepositoryContract']);
+		$this->app->bind(WorkflowPointCreateValidator::class, function($app){
+			return new WorkflowPointCreateValidator($app[WorkflowPointRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointUpdateValidator', function($app){
-			return new WorkflowPointUpdateValidator($app['Congraph\Contracts\Workflows\WorkflowPointRepositoryContract']);
+		$this->app->bind(WorkflowPointUpdateValidator::class, function($app){
+			return new WorkflowPointUpdateValidator($app[WorkflowPointRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointDeleteValidator', function($app){
-			return new WorkflowPointDeleteValidator($app['Congraph\Contracts\Workflows\WorkflowPointRepositoryContract']);
+		$this->app->bind(WorkflowPointDeleteValidator::class, function($app){
+			return new WorkflowPointDeleteValidator($app[WorkflowPointRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointFetchValidator', function($app){
-			return new WorkflowPointFetchValidator($app['Congraph\Contracts\Workflows\WorkflowPointRepositoryContract']);
+		$this->app->bind(WorkflowPointFetchValidator::class, function($app){
+			return new WorkflowPointFetchValidator($app[WorkflowPointRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointGetValidator', function($app){
+		$this->app->bind(WorkflowPointGetValidator::class, function($app){
 			return new WorkflowPointGetValidator();
 		});
 
 
 		// WorkflowSteps
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepCreateValidator', function($app){
+		$this->app->bind(WorkflowStepCreateValidator::class, function($app){
 			return new WorkflowStepCreateValidator(
-				$app['Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'], 
-				$app['Congraph\Contracts\Workflows\WorkflowPointRepositoryContract']
+				$app[WorkflowStepRepositoryContract::class], 
+				$app[WorkflowPointRepositoryContract::class]
 			);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepUpdateValidator', function($app){
+		$this->app->bind(WorkflowStepUpdateValidator::class, function($app){
 			return new WorkflowStepUpdateValidator(
-				$app['Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'], 
-				$app['Congraph\Contracts\Workflows\WorkflowPointRepositoryContract']
+				$app[WorkflowStepRepositoryContract::class], 
+				$app[WorkflowPointRepositoryContract::class]
 			);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepDeleteValidator', function($app){
-			return new WorkflowStepDeleteValidator($app['Congraph\Contracts\Workflows\WorkflowStepRepositoryContract']);
+		$this->app->bind(WorkflowStepDeleteValidator::class, function($app){
+			return new WorkflowStepDeleteValidator($app[WorkflowStepRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepFetchValidator', function($app){
-			return new WorkflowStepFetchValidator($app['Congraph\Contracts\Workflows\WorkflowStepRepositoryContract']);
+		$this->app->bind(WorkflowStepFetchValidator::class, function($app){
+			return new WorkflowStepFetchValidator($app[WorkflowStepRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepGetValidator', function($app){
+		$this->app->bind(WorkflowStepGetValidator::class, function($app){
 			return new WorkflowStepGetValidator();
 		});
 	}
@@ -201,25 +205,25 @@ class ValidatorsServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Workflows
-			'Congraph\Workflows\Validators\Workflows\WorkflowCreateValidator',
-			'Congraph\Workflows\Validators\Workflows\WorkflowUpdateValidator',
-			'Congraph\Workflows\Validators\Workflows\WorkflowDeleteValidator',
-			'Congraph\Workflows\Validators\Workflows\WorkflowFetchValidator',
-			'Congraph\Workflows\Validators\Workflows\WorkflowGetValidator',
+			WorkflowCreateValidator::class,
+			WorkflowUpdateValidator::class,
+			WorkflowDeleteValidator::class,
+			WorkflowFetchValidator::class,
+			WorkflowGetValidator::class,
 
 			// WorkflowPoints
-			'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointCreateValidator',
-			'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointUpdateValidator',
-			'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointDeleteValidator',
-			'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointFetchValidator',
-			'Congraph\Workflows\Validators\WorkflowPoints\WorkflowPointGetValidator',
+			WorkflowPointCreateValidator::class,
+			WorkflowPointUpdateValidator::class,
+			WorkflowPointDeleteValidator::class,
+			WorkflowPointFetchValidator::class,
+			WorkflowPointGetValidator::class,
 
 			// WorkflowSteps
-			'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepCreateValidator',
-			'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepUpdateValidator',
-			'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepDeleteValidator',
-			'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepFetchValidator',
-			'Congraph\Workflows\Validators\WorkflowSteps\WorkflowStepGetValidator',
+			WorkflowStepCreateValidator::class,
+			WorkflowStepUpdateValidator::class,
+			WorkflowStepDeleteValidator::class,
+			WorkflowStepFetchValidator::class,
+			WorkflowStepGetValidator::class,
 		];
 	}
 }

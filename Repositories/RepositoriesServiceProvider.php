@@ -10,6 +10,10 @@
 
 namespace Congraph\Workflows\Repositories;
 
+use Congraph\Contracts\Core\ObjectResolverContract;
+use Congraph\Contracts\Workflows\WorkflowPointRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowRepositoryContract;
+use Congraph\Contracts\Workflows\WorkflowStepRepositoryContract;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -26,13 +30,6 @@ use Illuminate\Support\ServiceProvider;
  * @version  	0.1.0-alpha
  */
 class RepositoriesServiceProvider extends ServiceProvider {
-
-	/**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-	protected $defer = true;
 
 	/**
 	 * Boot
@@ -60,34 +57,34 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	 */
 	protected function registerRepositories()
 	{
-		$this->app->singleton('Congraph\Workflows\Repositories\WorkflowRepository', function($app) {
+		$this->app->singleton(WorkflowRepository::class, function($app) {
 			return new WorkflowRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Congraph\Workflows\Repositories\WorkflowRepository', 'Congraph\Contracts\Workflows\WorkflowRepositoryContract'
+			WorkflowRepository::class, WorkflowRepositoryContract::class
 		);
 
-		$this->app->singleton('Congraph\Workflows\Repositories\WorkflowPointRepository', function($app) {
+		$this->app->singleton(WorkflowPointRepository::class, function($app) {
 			return new WorkflowPointRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Congraph\Workflows\Repositories\WorkflowPointRepository', 'Congraph\Contracts\Workflows\WorkflowPointRepositoryContract'
+			WorkflowPointRepository::class, WorkflowPointRepositoryContract::class
 		);
 
-		$this->app->singleton('Congraph\Workflows\Repositories\WorkflowStepRepository', function($app) {
+		$this->app->singleton(WorkflowStepRepository::class, function($app) {
 			return new WorkflowStepRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Congraph\Workflows\Repositories\WorkflowStepRepository', 'Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'
+			WorkflowStepRepository::class, WorkflowStepRepositoryContract::class
 		);
 
 	}
@@ -100,12 +97,12 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	protected function mapObjectResolvers()
 	{
 		$mappings = [
-			'workflow' => 'Congraph\Workflows\Repositories\WorkflowRepository',
-			'workflow-point' => 'Congraph\Workflows\Repositories\WorkflowPointRepository',
-			'workflow-step' => 'Congraph\Workflows\Repositories\WorkflowStepRepository'
+			'workflow' => WorkflowRepository::class,
+			'workflow-point' => WorkflowPointRepository::class,
+			'workflow-step' => WorkflowStepRepository::class,
 		];
 
-		$this->app->make('Congraph\Contracts\Core\ObjectResolverContract')->maps($mappings);
+		$this->app->make(ObjectResolverContract::class)->maps($mappings);
 	}
 	/**
 	 * Get the services provided by the provider.
@@ -115,10 +112,12 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	public function provides()
 	{
 		return [
-			'Congraph\Workflows\Repositories\WorkflowRepository',
-			'Congraph\Contracts\Workflows\WorkflowRepositoryContract',
-			'Congraph\Workflows\Repositories\WorkflowStepRepository',
-			'Congraph\Contracts\Workflows\WorkflowStepRepositoryContract'
+			WorkflowRepository::class,
+			WorkflowRepositoryContract::class,
+			WorkflowPointRepository::class,
+			WorkflowPointRepositoryContract::class,
+			WorkflowStepRepository::class,
+			WorkflowStepRepositoryContract::class,
 		];
 	}
 

@@ -304,7 +304,7 @@ class WorkflowPointRepository extends AbstractRepository implements WorkflowPoin
 		
 		if(Trunk::has($params, 'workflow-point'))
 		{
-			$workflowPoint = Trunk::get($id, 'workflow-point');
+			$workflowPoint = Trunk::get($params, 'workflow-point');
 			$workflowPoint->clearIncluded();
 			$workflowPoint->load($include);
 			$meta = ['id' => $id, 'include' => $include];

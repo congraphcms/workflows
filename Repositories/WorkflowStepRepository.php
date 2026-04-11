@@ -216,7 +216,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 		
 		if(Trunk::has($params, 'workflow-step'))
 		{
-			$workflowStep = Trunk::get($id, 'workflow-step');
+			$workflowStep = Trunk::get($params, 'workflow-step');
 			$workflowStep->clearIncluded();
 			$workflowStep->load($include);
 			$meta = ['id' => $id, 'include' => $include];
@@ -276,7 +276,7 @@ class WorkflowStepRepository extends AbstractRepository implements WorkflowStepR
 				'include' => $include
 			];
 			$workflowSteps->setMeta($meta);
-			return $workflows;
+			return $workflowSteps;
 		}
 
 		$query = $this->db->table('workflow_steps');

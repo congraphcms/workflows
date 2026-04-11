@@ -31,9 +31,10 @@ class WorkflowPointTestDbSeeder extends Seeder {
 
 	public function run()
 	{
-		DB::table('workflow_points')->truncate();
+		DB::table('workflow_points')->delete();
 		DB::table('workflow_points')->insert([
 			[
+				'id' => 1,
 				'workflow_id' => 1,
 				'status' => 'trashed',
 				'endpoint' => 'trash',
@@ -47,6 +48,7 @@ class WorkflowPointTestDbSeeder extends Seeder {
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
+				'id' => 2,
 				'workflow_id' => 1,
 				'status' => 'draft',
 				'endpoint' => 'move_to_drafts',
@@ -60,6 +62,7 @@ class WorkflowPointTestDbSeeder extends Seeder {
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
+				'id' => 3,
 				'workflow_id' => 1,
 				'status' => 'published',
 				'endpoint' => 'publish',
@@ -74,9 +77,10 @@ class WorkflowPointTestDbSeeder extends Seeder {
 			],
 		]);
 
-		DB::table('workflow_steps')->truncate();
+		DB::table('workflow_steps')->delete();
 		DB::table('workflow_steps')->insert([
 			[
+				'id' => 1,
 				'workflow_id' => 1,
 				'from_id' => 1,
 				'to_id' => 2,
@@ -84,6 +88,7 @@ class WorkflowPointTestDbSeeder extends Seeder {
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
+				'id' => 2,
 				'workflow_id' => 1,
 				'from_id' => 2,
 				'to_id' => 1,
@@ -91,6 +96,7 @@ class WorkflowPointTestDbSeeder extends Seeder {
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
+				'id' => 3,
 				'workflow_id' => 1,
 				'from_id' => 2,
 				'to_id' => 3,
@@ -98,6 +104,7 @@ class WorkflowPointTestDbSeeder extends Seeder {
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
+				'id' => 4,
 				'workflow_id' => 1,
 				'from_id' => 3,
 				'to_id' => 2,
@@ -105,6 +112,36 @@ class WorkflowPointTestDbSeeder extends Seeder {
 				'updated_at' => date("Y-m-d H:i:s")
 			]
 		]);
+
+		$this->syncSequence('workflow_points', 4);
+		$this->syncSequence('workflow_steps', 5);
 	}
 
+	private function syncSequence(string $table, int $nextId): void
+	{
+		$driver = DB::getDriverName();
+
+		if ($driver === 'pgsql') {
+			DB::statement(
+				"SELECT setval(pg_get_serial_sequence('{$table}', 'id'), ?, false)",
+				[$nextId]
+			);
+			return;
+		}
+
+		if ($driver === 'sqlite') {
+			try {
+				DB::table('sqlite_sequence')->updateOrInsert(
+					['name' => $table],
+					['seq' => $nextId - 1]
+				);
+			} catch (\Throwable $e) {
+			}
+			return;
+		}
+
+		if ($driver === 'mysql') {
+			DB::statement("ALTER TABLE {$table} AUTO_INCREMENT = {$nextId}");
+		}
+	}
 }
